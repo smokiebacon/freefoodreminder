@@ -1,12 +1,36 @@
+// document.addEventListener("DOMContentLoaded", () => {
+//   fetch("/mlb-schedule")
+//     .then((response) => response.json())
+//     .then((data) => {
+//       console.log(data, "data here")
+//       displayPastGames(data.pastHighScoringGames)
+//       displayUpcomingGames(data.futureHomeGames)
+//     })
+//     .catch((error) => console.error("Error:", error))
+// })
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("/api/mlb-schedule")
-    .then((response) => response.json())
+  fetch("/mlb-schedule")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const contentType = response.headers.get("content-type")
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new TypeError("Oops, we haven't got JSON!")
+      }
+      return response.json()
+    })
     .then((data) => {
-      displayPastGames(data.pastHighScoringGames)
-      displayUpcomingGames(data.futureHomeGames)
+      toggleDodgerBage(data)
+      // displayPastGames(data.pastHighScoringGames)
+      // displayUpcomingGames(data.futureHomeGames)
     })
     .catch((error) => console.error("Error:", error))
 })
+
+const dodgerBadge = document.querySelector("#dodger-badge")
+const angelsBadge = document.querySelector("#angel-badge")
+
 function todaysDate() {
   var today = new Date()
   var dd = today.getDate()
@@ -22,7 +46,7 @@ function todaysDate() {
   return today
 }
 
-const date = todaysDate()
+const date = "07/05/2024"
 //https://github.com/jasonlttl/gameday-api-docs/blob/master/team-information.md
 // https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=2024-03-01&endDate=2024-07-31&teamId=119
 const dodgersTeamId = 119 //Dodgers Team ID
@@ -30,6 +54,19 @@ const angelsTeamId = 108 // Angels Team ID
 const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${dodgersTeamId}`
 const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${angelsTeamId}`
 
+function toggleDodgerBage(data) {
+  if (dodgerBadge) {
+    if (data.dodgers.homeTeamWinner === true) {
+      dodgerBadge.innerHTML = "ACTIVE"
+      dodgerBadge.classList.remove("text-bg-danger")
+      dodgerBadge.classList.add("text-bg-success")
+    } else {
+      dodgerBadge.innerHTML = "Not Active"
+      dodgerBadge.classList.remove("text-bg-success")
+      dodgerBadge.classList.add("text-bg-danger")
+    }
+  }
+}
 function displayResult(data, elementId) {
   const resultDiv = document.getElementById(elementId)
   resultDiv.innerHTML = ""
@@ -62,7 +99,7 @@ fetch(url)
     return response.json()
   })
   .then((data) => {
-    console.log("Dodgers data:", data)
+    // console.log("Dodgers data:", data)
     displayResult(data, "result")
   })
   .catch((error) => {
