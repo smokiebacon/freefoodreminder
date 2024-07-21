@@ -31,7 +31,12 @@ export async function fetchDodgerSchedule() {
         }
       })
     })
-    dodgersGameDataDateRange = dodgersData
+
+    const newDodgersData = {
+      pastDodgerGamesWonWith6Plus: pastHighScoringGames,
+      futureHomeGames: futureHomeGames,
+    }
+    dodgersGameDataDateRange = newDodgersData
   } catch (error) {
     console.error("Failed", error)
   }

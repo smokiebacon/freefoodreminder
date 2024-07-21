@@ -24,6 +24,8 @@ app.get("/todays-game", (req, res) => {
 
 app.get("/mlb-schedule", (req, res) => {
   const dodgersCachedData = getDodgersCachedGameData()
+  console.log(dodgersCachedData, "dodgersCachedData")
+
   if (dodgersCachedData) {
     res.json(dodgersCachedData)
   } else {
