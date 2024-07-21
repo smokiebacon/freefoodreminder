@@ -1,17 +1,31 @@
 import express from "express"
 import path from "path"
-import { fetchAndProcessMLBData, getCachedGameData } from "./mlbDataService.js"
+import {
+  fetchAndProcessMLBData,
+  getCachedGameData,
+  getDodgersCachedGameData,
+  fetchDodgerSchedule,
+} from "./mlbDataService.js"
 const app = express()
 const port = 3000
 
 // Serve static files from the 'public' directory
 app.use(express.static("public"))
 fetchAndProcessMLBData()
-app.get("/mlb-schedule", (req, res) => {
+fetchDodgerSchedule()
+app.get("/todays-game", (req, res) => {
   const gameData = getCachedGameData()
   if (gameData) {
-    console.log(gameData, "data")
     res.json(gameData)
+  } else {
+    res.status(503).json({ error: "Data nost available yet" })
+  }
+})
+
+app.get("/mlb-schedule", (req, res) => {
+  const dodgersCachedData = getDodgersCachedGameData()
+  if (dodgersCachedData) {
+    res.json(dodgersCachedData)
   } else {
     res.status(503).json({ error: "Data nost available yet" })
   }

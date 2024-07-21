@@ -33,10 +33,8 @@ export function sendWinnerEmails(dodgersData) {
     Source: "smokiebacon@gmail.com",
     ReplyToAddresses: ["smokiebacon@gmail.com"],
   }
-  console.log("hi")
 
   const ses = new AWS.SES({ apiVersion: "2010-12-01" })
-  console.log("bye")
 
   return ses
     .sendEmail(params)
