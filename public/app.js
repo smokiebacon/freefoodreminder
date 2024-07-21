@@ -1,13 +1,20 @@
-// document.addEventListener("DOMContentLoaded", () => {
-//   fetch("/mlb-schedule")
-//     .then((response) => response.json())
-//     .then((data) => {
-//       console.log(data, "data here")
-//       displayPastGames(data.pastHighScoringGames)
-//       displayUpcomingGames(data.futureHomeGames)
-//     })
-//     .catch((error) => console.error("Error:", error))
-// })
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("/todays-game")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const contentType = response.headers.get("content-type")
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new TypeError("Oops, we haven't got JSON!")
+      }
+      return response.json()
+    })
+    .then((data) => {
+      toggleDodgerBage(data)
+    })
+    .catch((error) => console.error("Error:", error))
+})
 document.addEventListener("DOMContentLoaded", () => {
   fetch("/mlb-schedule")
     .then((response) => {
@@ -21,9 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return response.json()
     })
     .then((data) => {
-      toggleDodgerBage(data)
-      // displayPastGames(data.pastHighScoringGames)
-      // displayUpcomingGames(data.futureHomeGames)
+      displayPastGames(data.pastHighScoringGames)
+      displayUpcomingGames(data.futureHomeGames)
     })
     .catch((error) => console.error("Error:", error))
 })
@@ -46,13 +52,29 @@ function todaysDate() {
   return today
 }
 
-const date = "07/05/2024"
+function dodgersDateMinusOne() {
+  var today = new Date()
+  var dd = today.getDate() - 1
+  var mm = today.getMonth() + 1
+  var yyyy = today.getFullYear()
+  if (dd < 10) {
+    dd = "0" + dd
+  }
+  if (mm < 10) {
+    mm = "0" + mm
+  }
+  today = mm + "/" + dd + "/" + yyyy
+  return today
+}
+
+const date = dodgersDateMinusOne()
+const date2 = todaysDate()
 //https://github.com/jasonlttl/gameday-api-docs/blob/master/team-information.md
 // https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=2024-03-01&endDate=2024-07-31&teamId=119
 const dodgersTeamId = 119 //Dodgers Team ID
 const angelsTeamId = 108 // Angels Team ID
 const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${dodgersTeamId}`
-const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${angelsTeamId}`
+const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date2}&teamId=${angelsTeamId}`
 
 function toggleDodgerBage(data) {
   if (dodgerBadge) {
@@ -69,6 +91,7 @@ function toggleDodgerBage(data) {
 }
 function displayResult(data, elementId) {
   const resultDiv = document.getElementById(elementId)
+  console.log(elementId, "id")
   resultDiv.innerHTML = ""
 
   if (
@@ -78,14 +101,25 @@ function displayResult(data, elementId) {
     data.dates[0].games.length > 0
   ) {
     const game = data.dates[0].games[0]
-    resultDiv.innerHTML = `
-            <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${todaysDate()}</p>
+    if (elementId === "result") {
+      resultDiv.innerHTML = `
+            <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${dodgersDateMinusOne()}</p>
             <p>Home Team: ${game.teams.home.team.name}</p>
             <p>Home Team Score: ${game.teams.home.score}</p>
             <p>Home Team Winner: ${game.teams.home.isWinner}</p>
             <p>Away Team: ${game.teams.away.team.name}</p>
             <p>Away Team Score: ${game.teams.away.score}</>
         `
+    } else {
+      resultDiv.innerHTML = `
+      <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${todaysDate()}</p>
+      <p>Home Team: ${game.teams.home.team.name}</p>
+      <p>Home Team Score: ${game.teams.home.score}</p>
+      <p>Home Team Winner: ${game.teams.home.isWinner}</p>
+      <p>Away Team: ${game.teams.away.team.name}</p>
+      <p>Away Team Score: ${game.teams.away.score}</>
+  `
+    }
   } else {
     resultDiv.innerHTML = `No game scheduled for today.`
   }
