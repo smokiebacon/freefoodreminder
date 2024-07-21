@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return response.json()
     })
     .then((data) => {
-      displayPastGames(data.pastHighScoringGames)
+      displayPastGames(data.pastDodgerGamesWonWith6Plus)
       displayUpcomingGames(data.futureHomeGames)
     })
     .catch((error) => console.error("Error:", error))
@@ -91,7 +91,6 @@ function toggleDodgerBage(data) {
 }
 function displayResult(data, elementId) {
   const resultDiv = document.getElementById(elementId)
-  console.log(elementId, "id")
   resultDiv.innerHTML = ""
 
   if (
@@ -101,7 +100,7 @@ function displayResult(data, elementId) {
     data.dates[0].games.length > 0
   ) {
     const game = data.dates[0].games[0]
-    if (elementId === "result") {
+    if (elementId === "dodgers-result") {
       resultDiv.innerHTML = `
             <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${dodgersDateMinusOne()}</p>
             <p>Home Team: ${game.teams.home.team.name}</p>
@@ -133,8 +132,7 @@ fetch(url)
     return response.json()
   })
   .then((data) => {
-    // console.log("Dodgers data:", data)
-    displayResult(data, "result")
+    displayResult(data, "dodgers-result")
   })
   .catch((error) => {
     console.error("Error fetching MLB schedule:", error)
@@ -149,8 +147,7 @@ fetch(url2)
     return response.json()
   })
   .then((data) => {
-    // console.log("Angels schedule data:", data)
-    displayResult(data, "result2")
+    displayResult(data, "angels-result")
   })
   .catch((error) => {
     console.error("Error fetching MLB schedule:", error)
