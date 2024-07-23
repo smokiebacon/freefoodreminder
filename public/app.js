@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return response.json()
     })
     .then((data) => {
-      toggleDodgerBage(data)
+      toggleDodgerBadge(data)
     })
     .catch((error) => console.error("Error:", error))
 })
@@ -76,7 +76,7 @@ const angelsTeamId = 108 // Angels Team ID
 const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${dodgersTeamId}`
 const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date2}&teamId=${angelsTeamId}`
 
-function toggleDodgerBage(data) {
+function toggleDodgerBadge(data) {
   if (dodgerBadge) {
     if (data.dodgers.homeTeamWinner === true) {
       dodgerBadge.innerHTML = "ACTIVE"
