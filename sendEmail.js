@@ -7,7 +7,6 @@ AWS.config.update({
     "TBAbPpluchNml/u0zuyVI8oCMbSiCico6DvLPH3m" || process.env.AWS_SECRET_KEY,
   region: "us-east-1",
 })
-// JSON.stringify(dodgersData)
 export function sendWinnerEmails(dodgersData) {
   var params = {
     Destination: {
@@ -18,7 +17,7 @@ export function sendWinnerEmails(dodgersData) {
       Body: {
         Html: {
           Charset: "UTF-8",
-          Data: "asd", // Convert dodgersData to string
+          Data: JSON.stringify(dodgersData), // Convert dodgersData to string
         },
         Text: {
           Charset: "UTF-8",
