@@ -19,10 +19,11 @@ export async function fetchDodgerSchedule() {
       date.games.forEach((game) => {
         const gameDate = new Date(game.gameDate)
         const isDodgersHome = game.teams.home.team.id === dodgersId
+        const isDodgersHomeWin = game.teams.home.isWinner
 
         if (gameDate < currentDate) {
           // Past game
-          if (isDodgersHome && game.teams.home.score >= 6) {
+          if (isDodgersHome && isDodgersHomeWin) {
             pastHighScoringGames.push({ ...game, isDodgersHome: true })
           }
         } else if (isDodgersHome) {
@@ -33,7 +34,7 @@ export async function fetchDodgerSchedule() {
     })
 
     const newDodgersData = {
-      pastDodgerGamesWonWith6Plus: pastHighScoringGames,
+      pastDodgerGamesWon: pastHighScoringGames,
       futureHomeGames: futureHomeGames,
     }
     dodgersGameDataDateRange = newDodgersData

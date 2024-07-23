@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return response.json()
     })
     .then((data) => {
-      displayPastGames(data.pastDodgerGamesWonWith6Plus)
+      displayPastGames(data.pastDodgerGamesWon)
       displayUpcomingGames(data.futureHomeGames)
     })
     .catch((error) => console.error("Error:", error))
@@ -182,6 +182,7 @@ function displayPastGames(games) {
     row.innerHTML = `
               <td>${new Date(game.gameDate).toLocaleString()}</td>
               <td>${game.teams.away.team.name}</td>
+              <td>${game.teams.home.score} - ${game.teams.away.score}</td>
               <td>${game.venue.name}</td>
               <td>${game.status.detailedState}</td>
           `
