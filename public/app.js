@@ -167,6 +167,20 @@ function displayPastGames(games) {
     pastDodgerGameWinsTable.appendChild(row)
   })
 }
+
+function displayAngelsPastGames(games) {
+  const pastAngelsGameWinsTable = document.getElementById("angels-past-games")
+  games.forEach((game) => {
+    const row = document.createElement("tr")
+    row.innerHTML = `
+              <td>${new Date(game.gameDate).toLocaleString()}</td>
+              <td>${game.teams.away.team.name}</td>
+              <td>${game.venue.name}</td>
+              <td>${game.status.detailedState}</td>
+          `
+    pastAngelsGameWinsTable.appendChild(row)
+  })
+}
 function displayUpcomingGames(games) {
   const upcomingGamesTable = document.getElementById("upcomingGames")
   games.forEach((game) => {
@@ -178,5 +192,21 @@ function displayUpcomingGames(games) {
             <td>${game.status.detailedState}</td>
         `
     upcomingGamesTable.appendChild(row)
+  })
+}
+
+function displayAngelsUpcomingGames(games) {
+  const upcomingAngelsGamesTable = document.getElementById(
+    "angels-upcoming-games"
+  )
+  games.forEach((game) => {
+    const row = document.createElement("tr")
+    row.innerHTML = `
+            <td>${new Date(game.gameDate).toLocaleString()}</td>
+            <td>${game.teams.away.team.name}</td>
+            <td>${game.venue.name}</td>
+            <td>${game.status.detailedState}</td>
+        `
+    upcomingAngelsGamesTable.appendChild(row)
   })
 }
