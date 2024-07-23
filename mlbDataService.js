@@ -80,15 +80,15 @@ export async function fetchAndProcessMLBData() {
 
     cachedGameData = gameData
 
-    // // Handle email sending here
-    // if (gameData.dodgers && gameData.dodgers.homeTeamWinner === true) {
-    //   try {
-    //     await sendWinnerEmails(gameData.dodgers)
-    //     console.log("Email sent successfully")
-    //   } catch (error) {
-    //     console.error("Failed to send email:", error)
-    //   }
-    // }
+    // Handle email sending here
+    if (gameData.dodgers && gameData.dodgers.homeTeamWinner === true) {
+      try {
+        await sendWinnerEmails(gameData.dodgers)
+        console.log("Email sent successfully")
+      } catch (error) {
+        console.error("Failed to send email:", error)
+      }
+    }
 
     // Handle Chick-fil-A promotion
     if (
