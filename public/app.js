@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then((data) => {
       toggleDodgerBadge(data)
+      toggleAngelBadge(data)
     })
     .catch((error) => console.error("Error:", error))
 })
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 const dodgerBadge = document.querySelector("#dodger-badge")
-const angelsBadge = document.querySelector("#angel-badge")
+const angelBadge = document.querySelector("#angel-badge")
 
 function todaysDate() {
   var today = new Date()
@@ -78,14 +79,34 @@ const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date2}&t
 
 function toggleDodgerBadge(data) {
   if (dodgerBadge) {
-    if (data.dodgers.homeTeamWinner === true) {
+    if (
+      data.dodgers &&
+      data.dodgers.homeTeamName &&
+      data.dodgers.homeTeamWinner === true
+    ) {
       dodgerBadge.innerHTML = "ACTIVE"
-      dodgerBadge.classList.remove("text-bg-danger")
       dodgerBadge.classList.add("text-bg-success")
     } else {
       dodgerBadge.innerHTML = "Not Active"
-      dodgerBadge.classList.remove("text-bg-success")
       dodgerBadge.classList.add("text-bg-danger")
+    }
+  }
+}
+
+function toggleAngelBadge(data) {
+  if (angelBadge) {
+    if (
+      data.angels &&
+      data.angels.homeTeamName &&
+      data.angels.homeTeamScore >= 7
+    ) {
+      angelBadge.innerHTML = "ACTIVE"
+      angelBadge.classList.remove("text-bg-danger")
+      angelBadge.classList.add("text-bg-success")
+    } else {
+      angelBadge.innerHTML = "Not Active"
+      angelBadge.classList.remove("text-bg-success")
+      angelBadge.classList.add("text-bg-danger")
     }
   }
 }
