@@ -1,12 +1,11 @@
 // Load the AWS SDK for Node.js
-import AWS from "aws-sdk"
+import AWS from "aws-sdk";
 
 AWS.config.update({
-  accessKeyId: "AKIATXK2E5IHBNYROGXG" || process.env.AWS_ACCESS_KEY,
-  secretAccessKey:
-    "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" || process.env.AWS_SECRET_KEY,
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
   region: "us-east-1",
-})
+});
 export function sendWinnerEmails(dodgersData) {
   var params = {
     Destination: {
@@ -29,9 +28,9 @@ export function sendWinnerEmails(dodgersData) {
       },
     },
     Source: "Free Food Reminder <smokiebacon@gmail.com>",
-  }
+  };
 
-  const ses = new AWS.SES({ apiVersion: "2010-12-01" })
+  const ses = new AWS.SES({ apiVersion: "2010-12-01" });
 
   //get subscribers from Database
   //
@@ -39,11 +38,11 @@ export function sendWinnerEmails(dodgersData) {
     .sendEmail(params)
     .promise()
     .then(function (data) {
-      console.log(data.MessageId)
-      return data
+      console.log(data.MessageId);
+      return data;
     })
     .catch(function (err) {
-      console.error(err, err.stack)
-      throw err
-    })
+      console.error(err, err.stack);
+      throw err;
+    });
 }
