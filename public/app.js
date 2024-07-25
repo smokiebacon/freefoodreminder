@@ -71,12 +71,13 @@ function dodgersDateMinusOne() {
 
 const date = dodgersDateMinusOne();
 const date2 = todaysDate();
+const date3 = "07/23/2024";
 //https://github.com/jasonlttl/gameday-api-docs/blob/master/team-information.md
 // https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=2024-03-01&endDate=2024-07-31&teamId=119
 const dodgersTeamId = 119; //Dodgers Team ID
 const angelsTeamId = 108; // Angels Team ID
-const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${dodgersTeamId}`;
-const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date2}&teamId=${angelsTeamId}`;
+const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date3}&teamId=${dodgersTeamId}`;
+const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date3}&teamId=${angelsTeamId}`;
 
 function toggleDodgerBadge(data) {
   if (dodgerBadge) {
@@ -124,7 +125,7 @@ function displayResult(data, elementId) {
     const game = data.dates[0].games[0];
     if (elementId === "dodgers-result") {
       resultDiv.innerHTML = `
-            <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${dodgersDateMinusOne()}</p>
+            <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${game.officialDate}</p>
             <p>Home Team: ${game.teams.home.team.name}</p>
             <p>Home Team Score: ${game.teams.home.score}</p>
             <p>Home Team Winner: ${game.teams.home.isWinner}</p>
@@ -133,7 +134,7 @@ function displayResult(data, elementId) {
         `;
     } else {
       resultDiv.innerHTML = `
-      <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${todaysDate()}</p>
+      <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${game.officialDate}</p>
       <p>Home Team: ${game.teams.home.team.name}</p>
       <p>Home Team Score: ${game.teams.home.score}</p>
       <p>Home Team Winner: ${game.teams.home.isWinner}</p>
@@ -206,6 +207,7 @@ function displayAngelsPastGames(games) {
 }
 function displayUpcomingGames(games) {
   const upcomingGamesTable = document.getElementById("upcomingGames");
+
   games.forEach((game) => {
     const row = document.createElement("tr");
     row.innerHTML = `

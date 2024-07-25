@@ -63,7 +63,7 @@ export async function fetchAndProcessMLBData() {
   let dodgersTeamId = 119;
   let angelsTeamId = 108;
   const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${dodgersDate2}&teamId=${dodgersTeamId}`;
-  const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${angelsTeamId}`;
+  const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${dodgersDate2}&teamId=${angelsTeamId}`;
 
   try {
     const [dodgersResponse, angelsResponse] = await Promise.all([
