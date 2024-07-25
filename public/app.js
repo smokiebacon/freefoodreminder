@@ -2,80 +2,81 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("/todays-game")
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const contentType = response.headers.get("content-type")
+      const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
-        throw new TypeError("Oops, we haven't got JSON!")
+        throw new TypeError("Oops, we haven't got JSON!");
       }
-      return response.json()
+      return response.json();
     })
     .then((data) => {
-      toggleDodgerBadge(data)
-      toggleAngelBadge(data)
+      console.log(data.timeZone, "timeZone");
+      toggleDodgerBadge(data);
+      toggleAngelBadge(data);
     })
-    .catch((error) => console.error("Error:", error))
-})
+    .catch((error) => console.error("Error:", error));
+});
 document.addEventListener("DOMContentLoaded", () => {
   fetch("/mlb-schedule")
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const contentType = response.headers.get("content-type")
+      const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
-        throw new TypeError("Oops, we haven't got JSON!")
+        throw new TypeError("Oops, we haven't got JSON!");
       }
-      return response.json()
+      return response.json();
     })
     .then((data) => {
-      displayPastGames(data.pastDodgerGamesWon)
-      displayUpcomingGames(data.futureHomeGames)
+      displayPastGames(data.pastDodgerGamesWon);
+      displayUpcomingGames(data.futureHomeGames);
     })
-    .catch((error) => console.error("Error:", error))
-})
+    .catch((error) => console.error("Error:", error));
+});
 
-const dodgerBadge = document.querySelector("#dodger-badge")
-const angelBadge = document.querySelector("#angel-badge")
+const dodgerBadge = document.querySelector("#dodger-badge");
+const angelBadge = document.querySelector("#angel-badge");
 
 function todaysDate() {
-  var today = new Date()
-  var dd = today.getDate()
-  var mm = today.getMonth() + 1
-  var yyyy = today.getFullYear()
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth() + 1;
+  var yyyy = today.getFullYear();
   if (dd < 10) {
-    dd = "0" + dd
+    dd = "0" + dd;
   }
   if (mm < 10) {
-    mm = "0" + mm
+    mm = "0" + mm;
   }
-  today = mm + "/" + dd + "/" + yyyy
-  return today
+  today = mm + "/" + dd + "/" + yyyy;
+  return today;
 }
 
 function dodgersDateMinusOne() {
-  var today = new Date()
-  var dd = today.getDate() - 1
-  var mm = today.getMonth() + 1
-  var yyyy = today.getFullYear()
+  var today = new Date();
+  var dd = today.getDate() - 1;
+  var mm = today.getMonth() + 1;
+  var yyyy = today.getFullYear();
   if (dd < 10) {
-    dd = "0" + dd
+    dd = "0" + dd;
   }
   if (mm < 10) {
-    mm = "0" + mm
+    mm = "0" + mm;
   }
-  today = mm + "/" + dd + "/" + yyyy
-  return today
+  today = mm + "/" + dd + "/" + yyyy;
+  return today;
 }
 
-const date = dodgersDateMinusOne()
-const date2 = todaysDate()
+const date = dodgersDateMinusOne();
+const date2 = todaysDate();
 //https://github.com/jasonlttl/gameday-api-docs/blob/master/team-information.md
 // https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=2024-03-01&endDate=2024-07-31&teamId=119
-const dodgersTeamId = 119 //Dodgers Team ID
-const angelsTeamId = 108 // Angels Team ID
-const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${dodgersTeamId}`
-const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date2}&teamId=${angelsTeamId}`
+const dodgersTeamId = 119; //Dodgers Team ID
+const angelsTeamId = 108; // Angels Team ID
+const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${dodgersTeamId}`;
+const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date2}&teamId=${angelsTeamId}`;
 
 function toggleDodgerBadge(data) {
   if (dodgerBadge) {
@@ -84,11 +85,11 @@ function toggleDodgerBadge(data) {
       data.dodgers.homeTeamName &&
       data.dodgers.homeTeamWinner === true
     ) {
-      dodgerBadge.innerHTML = "ACTIVE"
-      dodgerBadge.classList.add("text-bg-success")
+      dodgerBadge.innerHTML = "ACTIVE";
+      dodgerBadge.classList.add("text-bg-success");
     } else {
-      dodgerBadge.innerHTML = "Not Active"
-      dodgerBadge.classList.add("text-bg-danger")
+      dodgerBadge.innerHTML = "Not Active";
+      dodgerBadge.classList.add("text-bg-danger");
     }
   }
 }
@@ -100,19 +101,19 @@ function toggleAngelBadge(data) {
       data.angels.homeTeamName &&
       data.angels.homeTeamScore >= 7
     ) {
-      angelBadge.innerHTML = "ACTIVE"
-      angelBadge.classList.remove("text-bg-danger")
-      angelBadge.classList.add("text-bg-success")
+      angelBadge.innerHTML = "ACTIVE";
+      angelBadge.classList.remove("text-bg-danger");
+      angelBadge.classList.add("text-bg-success");
     } else {
-      angelBadge.innerHTML = "Not Active"
-      angelBadge.classList.remove("text-bg-success")
-      angelBadge.classList.add("text-bg-danger")
+      angelBadge.innerHTML = "Not Active";
+      angelBadge.classList.remove("text-bg-success");
+      angelBadge.classList.add("text-bg-danger");
     }
   }
 }
 function displayResult(data, elementId) {
-  const resultDiv = document.getElementById(elementId)
-  resultDiv.innerHTML = ""
+  const resultDiv = document.getElementById(elementId);
+  resultDiv.innerHTML = "";
 
   if (
     data.dates &&
@@ -120,7 +121,7 @@ function displayResult(data, elementId) {
     data.dates[0].games &&
     data.dates[0].games.length > 0
   ) {
-    const game = data.dates[0].games[0]
+    const game = data.dates[0].games[0];
     if (elementId === "dodgers-result") {
       resultDiv.innerHTML = `
             <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${dodgersDateMinusOne()}</p>
@@ -129,7 +130,7 @@ function displayResult(data, elementId) {
             <p>Home Team Winner: ${game.teams.home.isWinner}</p>
             <p>Away Team: ${game.teams.away.team.name}</p>
             <p>Away Team Score: ${game.teams.away.score}</>
-        `
+        `;
     } else {
       resultDiv.innerHTML = `
       <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${todaysDate()}</p>
@@ -138,97 +139,97 @@ function displayResult(data, elementId) {
       <p>Home Team Winner: ${game.teams.home.isWinner}</p>
       <p>Away Team: ${game.teams.away.team.name}</p>
       <p>Away Team Score: ${game.teams.away.score}</>
-  `
+  `;
     }
   } else {
-    resultDiv.innerHTML = `No game scheduled for today.`
+    resultDiv.innerHTML = `No game scheduled for today.`;
   }
 }
 
 fetch(url)
   .then((response) => {
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.json()
+    return response.json();
   })
   .then((data) => {
-    displayResult(data, "dodgers-result")
+    displayResult(data, "dodgers-result");
   })
   .catch((error) => {
-    console.error("Error fetching MLB schedule:", error)
-    document.getElementById("result").innerHTML = `Error: ${error.message}`
-  })
+    console.error("Error fetching MLB schedule:", error);
+    document.getElementById("result").innerHTML = `Error: ${error.message}`;
+  });
 
 fetch(url2)
   .then((response) => {
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.json()
+    return response.json();
   })
   .then((data) => {
-    displayResult(data, "angels-result")
+    displayResult(data, "angels-result");
   })
   .catch((error) => {
-    console.error("Error fetching MLB schedule:", error)
-    document.getElementById("result").innerHTML = `Error: ${error.message}`
-  })
+    console.error("Error fetching MLB schedule:", error);
+    document.getElementById("result").innerHTML = `Error: ${error.message}`;
+  });
 
 function displayPastGames(games) {
-  const pastDodgerGameWinsTable = document.getElementById("pastGames")
+  const pastDodgerGameWinsTable = document.getElementById("pastGames");
   games.forEach((game) => {
-    const row = document.createElement("tr")
+    const row = document.createElement("tr");
     row.innerHTML = `
               <td>${new Date(game.gameDate).toLocaleString()}</td>
               <td>${game.teams.away.team.name}</td>
               <td>${game.teams.home.score} - ${game.teams.away.score}</td>
               <td>${game.venue.name}</td>
               <td>${game.status.detailedState}</td>
-          `
-    pastDodgerGameWinsTable.appendChild(row)
-  })
+          `;
+    pastDodgerGameWinsTable.appendChild(row);
+  });
 }
 
 function displayAngelsPastGames(games) {
-  const pastAngelsGameWinsTable = document.getElementById("angels-past-games")
+  const pastAngelsGameWinsTable = document.getElementById("angels-past-games");
   games.forEach((game) => {
-    const row = document.createElement("tr")
+    const row = document.createElement("tr");
     row.innerHTML = `
               <td>${new Date(game.gameDate).toLocaleString()}</td>
               <td>${game.teams.away.team.name}</td>
               <td>${game.venue.name}</td>
               <td>${game.status.detailedState}</td>
-          `
-    pastAngelsGameWinsTable.appendChild(row)
-  })
+          `;
+    pastAngelsGameWinsTable.appendChild(row);
+  });
 }
 function displayUpcomingGames(games) {
-  const upcomingGamesTable = document.getElementById("upcomingGames")
+  const upcomingGamesTable = document.getElementById("upcomingGames");
   games.forEach((game) => {
-    const row = document.createElement("tr")
+    const row = document.createElement("tr");
     row.innerHTML = `
             <td>${new Date(game.gameDate).toLocaleString()}</td>
             <td>${game.teams.away.team.name}</td>
             <td>${game.venue.name}</td>
             <td>${game.status.detailedState}</td>
-        `
-    upcomingGamesTable.appendChild(row)
-  })
+        `;
+    upcomingGamesTable.appendChild(row);
+  });
 }
 
 function displayAngelsUpcomingGames(games) {
   const upcomingAngelsGamesTable = document.getElementById(
     "angels-upcoming-games"
-  )
+  );
   games.forEach((game) => {
-    const row = document.createElement("tr")
+    const row = document.createElement("tr");
     row.innerHTML = `
             <td>${new Date(game.gameDate).toLocaleString()}</td>
             <td>${game.teams.away.team.name}</td>
             <td>${game.venue.name}</td>
             <td>${game.status.detailedState}</td>
-        `
-    upcomingAngelsGamesTable.appendChild(row)
-  })
+        `;
+    upcomingAngelsGamesTable.appendChild(row);
+  });
 }
