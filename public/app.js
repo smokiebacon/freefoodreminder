@@ -71,13 +71,12 @@ function dodgersDateMinusOne() {
 
 const date = dodgersDateMinusOne();
 const date2 = todaysDate();
-const date3 = "07/23/2024";
 //https://github.com/jasonlttl/gameday-api-docs/blob/master/team-information.md
 // https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=2024-03-01&endDate=2024-07-31&teamId=119
 const dodgersTeamId = 119; //Dodgers Team ID
 const angelsTeamId = 108; // Angels Team ID
-const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date3}&teamId=${dodgersTeamId}`;
-const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date3}&teamId=${angelsTeamId}`;
+const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${dodgersTeamId}`;
+const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date2}&teamId=${angelsTeamId}`;
 
 function toggleDodgerBadge(data) {
   if (dodgerBadge) {

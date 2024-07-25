@@ -4,6 +4,7 @@ import { todaysDate, dodgersDateMinusOne, getMonthBoundaries } from "./date.js";
 
 let cachedGameData = null;
 let dodgersGameDataDateRange = null;
+let newCachedGameData = null;
 
 export async function fetchDodgersAndAngelsMonthSchedule() {
   let dodgersTeamId = 119;
@@ -13,9 +14,45 @@ export async function fetchDodgersAndAngelsMonthSchedule() {
 
   let dodgersURL = `https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=${resultDate.firstDay}&endDate=${resultDate.lastDay}&teamId=${dodgersTeamId}`;
   let angelsURL = `https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=${resultDate.firstDay}&endDate=${resultDate.lastDay}&teamId=${angelsTeamId}`;
-  console.log(dodgersURL);
-  console.log(angelsURL, "asd");
+  try {
+    const currentDate = new Date();
+    const dodgersId = 119; // Dodgers team ID
+    const angelsId = 108; // Dodgers team ID
+
+    const pastDodgerHomeWins = [];
+    const futureDodgerHomeGames = [];
+    const pastAngelsHomeWins = [];
+    const futureAngelHomeGames = [];
+    const [dodgersResponse, angelsResponse] = await Promise.all([
+      fetch(dodgersURL),
+      fetch(angelsURL),
+    ]);
+    const dodgerData = await dodgersResponse.json();
+    const angelsData = await angelsResponse.json();
+    dodgerData.dates.forEach((date) => {
+      date.games.forEach((game) => {
+        gameDate = new Date(game.gameDate);
+        const isDodgersHome = games.teams.home.team.id === dodgersId;
+        const isDodgersHomeWin = game.teams.home.isWinner;
+        if (gameDate < currentDate) {
+          if (isDodgersHome && isDodgersHomeWin) {
+            pastDodgerHomeWins.push({ ...game, isDodgersHome: true });
+          } else {
+            futureDodgerHomeGames.push(game);
+          }
+          const newDodgersData = {
+            pastDodgerGamesWon: pastDodgerHomeWins,
+            futureHomeGames: futureDodgerHomeGames,
+          };
+          newCachedGameData = newDodgersData;
+        }
+      });
+    });
+  } catch (error) {
+    console.error("Failed", error);
+  }
 }
+
 export async function fetchDodgerSchedule() {
   const url =
     "https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=2024-07-01&endDate=2024-07-31&teamId=119";
@@ -58,12 +95,11 @@ export async function fetchDodgerSchedule() {
 export async function fetchAndProcessMLBData() {
   const date = todaysDate();
   const dodgersDate = dodgersDateMinusOne();
-  const dodgersDate2 = "07/23/2024";
 
   let dodgersTeamId = 119;
   let angelsTeamId = 108;
-  const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${dodgersDate2}&teamId=${dodgersTeamId}`;
-  const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${dodgersDate2}&teamId=${angelsTeamId}`;
+  const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${dodgersDate}&teamId=${dodgersTeamId}`;
+  const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${angelsTeamId}`;
 
   try {
     const [dodgersResponse, angelsResponse] = await Promise.all([
@@ -125,4 +161,8 @@ export function getCachedGameData() {
 
 export function getDodgersCachedGameData() {
   return dodgersGameDataDateRange;
+}
+
+export function newGetDodgersAndAngelsCachedGameData() {
+  return newCachedGameData;
 }
