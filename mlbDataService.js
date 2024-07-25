@@ -1,9 +1,21 @@
 import fetch from "node-fetch"
 import { sendWinnerEmails } from "./sendEmail.js"
-import { todaysDate, dodgersDateMinusOne } from "./date.js"
+import { todaysDate, dodgersDateMinusOne, getMonthBoundaries } from "./date.js"
 
 let cachedGameData = null
 let dodgersGameDataDateRange = null
+
+export async function fetchDodgersAndAngelsMonthSchedule() {
+  let dodgersTeamId = 119
+  let angelsTeamId = 108
+  // Example usage:
+  const resultDate = getMonthBoundaries()
+
+  let dodgersURL = `https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=${resultDate.firstDay}&endDate=${resultDate.lastDay}&teamId=${dodgersTeamId}`
+  let angelsURL = `https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=${resultDate.firstDay}&endDate=${resultDate.lastDay}&teamId=${angelsTeamId}`
+  console.log(dodgersURL)
+  console.log(angelsURL, "asd")
+}
 export async function fetchDodgerSchedule() {
   const url =
     "https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=2024-07-01&endDate=2024-07-31&teamId=119"
@@ -46,8 +58,8 @@ export async function fetchDodgerSchedule() {
 export async function fetchAndProcessMLBData() {
   const date = todaysDate()
   const dodgersDate = dodgersDateMinusOne()
-  const dodgersTeamId = 119
-  const angelsTeamId = 108
+  let dodgersTeamId = 119
+  let angelsTeamId = 108
   const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${dodgersDate}&teamId=${dodgersTeamId}`
   const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${angelsTeamId}`
 
@@ -81,14 +93,14 @@ export async function fetchAndProcessMLBData() {
     cachedGameData = gameData
 
     // Handle email sending here
-    if (gameData.dodgers && gameData.dodgers.homeTeamWinner === true) {
-      try {
-        await sendWinnerEmails(gameData.dodgers)
-        console.log("Email sent successfully")
-      } catch (error) {
-        console.error("Failed to send email:", error)
-      }
-    }
+    // if (gameData.dodgers && gameData.dodgers.homeTeamWinner === true) {
+    //   try {
+    //     await sendWinnerEmails(gameData.dodgers)
+    //     console.log("Email sent successfully")
+    //   } catch (error) {
+    //     console.error("Failed to send email:", error)
+    //   }
+    // }
 
     // Handle Chick-fil-A promotion
     if (

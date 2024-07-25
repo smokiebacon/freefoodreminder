@@ -10,7 +10,6 @@ AWS.config.update({
 export function sendWinnerEmails(dodgersData) {
   var params = {
     Destination: {
-      CcAddresses: ["smokiebacon@gmail.com"],
       ToAddresses: ["smokiebacon@gmail.com"],
     },
     Message: {
@@ -29,12 +28,13 @@ export function sendWinnerEmails(dodgersData) {
         Data: "Dodgers Won! $5 Panda Express coupon code 'dodgerswin' is active today until 11:59 PM",
       },
     },
-    Source: "smokiebacon@gmail.com",
-    ReplyToAddresses: ["smokiebacon@gmail.com"],
+    Source: "Free Food Reminder <smokiebacon@gmail.com>",
   }
 
   const ses = new AWS.SES({ apiVersion: "2010-12-01" })
 
+  //get subscribers from Database
+  //
   return ses
     .sendEmail(params)
     .promise()
