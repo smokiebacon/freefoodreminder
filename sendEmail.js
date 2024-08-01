@@ -2,10 +2,9 @@
 import AWS from "aws-sdk"
 
 AWS.config.update({
-  accessKeyId: "AKIATXK2E5IHBNYROGXG" || process.env.AWS_ACCESS_KEY,
-  secretAccessKey:
-    "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" || process.env.AWS_SECRET_KEY,
-  region: "us-east-1",
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+  region: "us-west-1",
 })
 export function sendWinnerEmails(dodgersData) {
   var params = {

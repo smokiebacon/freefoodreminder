@@ -4,20 +4,16 @@ import { getMonthBoundaries } from "./date.js"
 import {
   fetchAndProcessMLBData,
   getCachedGameData,
-  getDodgersCachedGameData,
-  fetchDodgerSchedule,
-  fetchDodgersAndAngelsMonthSchedule,
+  getDodgerAndAngelsCachedGamesData,
+  fetchDodgerAndAngelsSchedule,
 } from "./mlbDataService.js"
 const app = express()
 const port = 3000
-let dodgersTeamId = 119
-let angelsTeamId = 108
 
 // Serve static files from the 'public' directory
 app.use(express.static("public"))
 fetchAndProcessMLBData()
-fetchDodgerSchedule()
-fetchDodgersAndAngelsMonthSchedule()
+fetchDodgerAndAngelsSchedule()
 
 app.get("/todays-game", (req, res) => {
   const gameData = getCachedGameData()
@@ -29,10 +25,10 @@ app.get("/todays-game", (req, res) => {
 })
 
 app.get("/mlb-schedule", (req, res) => {
-  const dodgersCachedData = getDodgersCachedGameData()
+  const cachedGamesData = getDodgerAndAngelsCachedGamesData()
 
-  if (dodgersCachedData) {
-    res.json(dodgersCachedData)
+  if (cachedGamesData) {
+    res.json(cachedGamesData)
   } else {
     res.status(503).json({ error: "Data nost available yet" })
   }

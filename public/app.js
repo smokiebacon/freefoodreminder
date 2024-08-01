@@ -13,9 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((data) => {
       toggleDodgerBadge(data)
       toggleAngelBadge(data)
+      displayTodaysGameResults(data)
     })
     .catch((error) => console.error("Error:", error))
 })
+
 document.addEventListener("DOMContentLoaded", () => {
   fetch("/mlb-schedule")
     .then((response) => {
@@ -29,8 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
       return response.json()
     })
     .then((data) => {
-      displayPastGames(data.pastDodgerGamesWon)
-      displayUpcomingGames(data.futureHomeGames)
+      displayPastDodgerGames(data.pastDodgerGamesWon)
+      displayUpcomingDodgerGames(data.futureDodgerHomeGames)
+      displayAngelsUpcomingGames(data.futureAngelHomeGames)
     })
     .catch((error) => console.error("Error:", error))
 })
@@ -38,50 +41,39 @@ document.addEventListener("DOMContentLoaded", () => {
 const dodgerBadge = document.querySelector("#dodger-badge")
 const angelBadge = document.querySelector("#angel-badge")
 
-function todaysDate() {
-  var today = new Date()
-  var dd = today.getDate()
-  var mm = today.getMonth() + 1
-  var yyyy = today.getFullYear()
-  if (dd < 10) {
-    dd = "0" + dd
-  }
-  if (mm < 10) {
-    mm = "0" + mm
-  }
-  today = mm + "/" + dd + "/" + yyyy
-  return today
-}
+function displayTodaysGameResults(data) {
+  const dodgerDiv = document.getElementById("dodgers-result")
+  const angelsDiv = document.getElementById("angels-result")
 
-function dodgersDateMinusOne() {
-  var today = new Date()
-  var dd = today.getDate() - 1
-  var mm = today.getMonth() + 1
-  var yyyy = today.getFullYear()
-  if (dd < 10) {
-    dd = "0" + dd
+  if (data) {
+    const dodgersData = data.dodgers
+    const angelsData = data.angels
+    dodgerDiv.innerHTML = `
+            <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${dodgersData.officialDate}</p>
+            <p>Home Team: ${dodgersData.homeTeamName}</p>
+            <p>Home Team Score: ${dodgersData.homeTeamScore}</p>
+            <p>Home Team Winner: ${dodgersData.homeTeamWinner}</p>
+            <p>Away Team: ${dodgersData.awayTeamName}</p>
+            <p>Away Team Score: ${dodgersData.awayTeamScore}</>
+        `
+    angelsDiv.innerHTML = `
+      <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${angelsData.officialDate}</p>
+      <p>Home Team: ${angelsData.homeTeamName}</p>
+      <p>Home Team Score: ${angelsData.homeTeamScore}</p>
+      <p>Home Team Winner: ${angelsData.homeTeamWinner}</p>
+      <p>Away Team: ${angelsData.awayTeamName}</p>
+      <p>Away Team Score: ${angelsData.awayTeamScore}</>
+  `
+  } else {
+    console.log("No Game")
   }
-  if (mm < 10) {
-    mm = "0" + mm
-  }
-  today = mm + "/" + dd + "/" + yyyy
-  return today
 }
-
-const date = dodgersDateMinusOne()
-const date2 = todaysDate()
-//https://github.com/jasonlttl/gameday-api-docs/blob/master/team-information.md
-// https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=2024-03-01&endDate=2024-07-31&teamId=119
-const dodgersTeamId = 119 //Dodgers Team ID
-const angelsTeamId = 108 // Angels Team ID
-const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${dodgersTeamId}`
-const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date2}&teamId=${angelsTeamId}`
 
 function toggleDodgerBadge(data) {
   if (dodgerBadge) {
     if (
       data.dodgers &&
-      data.dodgers.homeTeamName &&
+      data.dodgers.homeTeamName == "Los Angeles Dodgers" &&
       data.dodgers.homeTeamWinner === true
     ) {
       dodgerBadge.innerHTML = "ACTIVE"
@@ -110,73 +102,11 @@ function toggleAngelBadge(data) {
     }
   }
 }
-function displayResult(data, elementId) {
-  const resultDiv = document.getElementById(elementId)
-  resultDiv.innerHTML = ""
 
-  if (
-    data.dates &&
-    data.dates.length > 0 &&
-    data.dates[0].games &&
-    data.dates[0].games.length > 0
-  ) {
-    const game = data.dates[0].games[0]
-    if (elementId === "dodgers-result") {
-      resultDiv.innerHTML = `
-            <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${dodgersDateMinusOne()}</p>
-            <p>Home Team: ${game.teams.home.team.name}</p>
-            <p>Home Team Score: ${game.teams.home.score}</p>
-            <p>Home Team Winner: ${game.teams.home.isWinner}</p>
-            <p>Away Team: ${game.teams.away.team.name}</p>
-            <p>Away Team Score: ${game.teams.away.score}</>
-        `
-    } else {
-      resultDiv.innerHTML = `
-      <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${todaysDate()}</p>
-      <p>Home Team: ${game.teams.home.team.name}</p>
-      <p>Home Team Score: ${game.teams.home.score}</p>
-      <p>Home Team Winner: ${game.teams.home.isWinner}</p>
-      <p>Away Team: ${game.teams.away.team.name}</p>
-      <p>Away Team Score: ${game.teams.away.score}</>
-  `
-    }
-  } else {
-    resultDiv.innerHTML = `No game scheduled for today.`
-  }
-}
+function displayPastDodgerGames(games) {
+  const pastDodgerGameWinsTable = document.getElementById("dodgers-past-games")
+  const pastAngelsGameWinsTable = document.getElementById("angels-past-games")
 
-fetch(url)
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    return response.json()
-  })
-  .then((data) => {
-    displayResult(data, "dodgers-result")
-  })
-  .catch((error) => {
-    console.error("Error fetching MLB schedule:", error)
-    document.getElementById("result").innerHTML = `Error: ${error.message}`
-  })
-
-fetch(url2)
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    return response.json()
-  })
-  .then((data) => {
-    displayResult(data, "angels-result")
-  })
-  .catch((error) => {
-    console.error("Error fetching MLB schedule:", error)
-    document.getElementById("result").innerHTML = `Error: ${error.message}`
-  })
-
-function displayPastGames(games) {
-  const pastDodgerGameWinsTable = document.getElementById("pastGames")
   games.forEach((game) => {
     const row = document.createElement("tr")
     row.innerHTML = `
@@ -187,24 +117,17 @@ function displayPastGames(games) {
               <td>${game.status.detailedState}</td>
           `
     pastDodgerGameWinsTable.appendChild(row)
+    // pastAngelsGameWinsTable.appendChild(row)
   })
 }
-
-function displayAngelsPastGames(games) {
-  const pastAngelsGameWinsTable = document.getElementById("angels-past-games")
-  games.forEach((game) => {
-    const row = document.createElement("tr")
-    row.innerHTML = `
-              <td>${new Date(game.gameDate).toLocaleString()}</td>
-              <td>${game.teams.away.team.name}</td>
-              <td>${game.venue.name}</td>
-              <td>${game.status.detailedState}</td>
-          `
-    pastAngelsGameWinsTable.appendChild(row)
-  })
-}
-function displayUpcomingGames(games) {
+function displayUpcomingDodgerGames(games) {
+  if (!games) return
   const upcomingGamesTable = document.getElementById("upcomingGames")
+  if (games.length === 0) {
+    const displayNoGamesRow = document.createElement("div")
+    displayNoGamesRow.innerHTML = "No Upcoming Games"
+    upcomingGamesTable.appendChild(displayNoGamesRow)
+  }
   games.forEach((game) => {
     const row = document.createElement("tr")
     row.innerHTML = `

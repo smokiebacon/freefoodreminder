@@ -3,58 +3,79 @@ import { sendWinnerEmails } from "./sendEmail.js"
 import { todaysDate, dodgersDateMinusOne, getMonthBoundaries } from "./date.js"
 
 let cachedGameData = null
-let dodgersGameDataDateRange = null
+let allGameData = null
 
-export async function fetchDodgersAndAngelsMonthSchedule() {
+//route is mlb-schedule
+export async function fetchDodgerAndAngelsSchedule() {
   let dodgersTeamId = 119
   let angelsTeamId = 108
-  // Example usage:
   const resultDate = getMonthBoundaries()
 
   let dodgersURL = `https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=${resultDate.firstDay}&endDate=${resultDate.lastDay}&teamId=${dodgersTeamId}`
   let angelsURL = `https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=${resultDate.firstDay}&endDate=${resultDate.lastDay}&teamId=${angelsTeamId}`
-  console.log(dodgersURL)
-  console.log(angelsURL, "asd")
-}
-export async function fetchDodgerSchedule() {
-  const url =
-    "https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=2024-07-01&endDate=2024-07-31&teamId=119"
 
   try {
     const currentDate = new Date()
-    const dodgersId = 119 // Dodgers team ID
-    const pastHighScoringGames = []
-    const futureHomeGames = []
-    const dodgersResponse = await fetch(url)
+    const [dodgersResponse, angelsResponse] = await Promise.all([
+      fetch(dodgersURL),
+      fetch(angelsURL),
+    ])
     const dodgersData = await dodgersResponse.json()
+    const angelsData = await angelsResponse.json()
+    const pastDodgersWinsGames = []
+    const futureDodgerHomeGames = []
+    const pastAngelWinsGames = []
+    const futureAngelHomeGames = []
     dodgersData.dates.forEach((date) => {
       date.games.forEach((game) => {
         const gameDate = new Date(game.gameDate)
-        const isDodgersHome = game.teams.home.team.id === dodgersId
+        const isDodgersHome = game.teams.home.team.id === dodgersTeamId
         const isDodgersHomeWin = game.teams.home.isWinner
 
         if (gameDate < currentDate) {
           // Past game
           if (isDodgersHome && isDodgersHomeWin) {
-            pastHighScoringGames.push({ ...game, isDodgersHome: true })
+            pastDodgersWinsGames.push({ ...game, isDodgersHome: true })
           }
         } else if (isDodgersHome) {
           // Future home game
-          futureHomeGames.push(game)
+          futureDodgerHomeGames.push(game)
         }
       })
     })
 
-    const newDodgersData = {
-      pastDodgerGamesWon: pastHighScoringGames,
-      futureHomeGames: futureHomeGames,
+    angelsData.dates.forEach((date) => {
+      date.games.forEach((game) => {
+        const gameDate = new Date(game.gameDate)
+        const isAngelHome = game.teams.home.team.id === angelsTeamId
+        const isAngelHomeWin = game.teams.home.isWinner
+
+        if (gameDate < currentDate) {
+          // Past game
+          if (angelsTeamId && isAngelHomeWin) {
+            pastAngelWinsGames.push({ ...game, isAngelsHome: true })
+          }
+        } else if (isAngelHome) {
+          // Future home game
+          futureAngelHomeGames.push(game)
+        }
+      })
+    })
+
+    const newData = {
+      pastDodgerGamesWon: pastDodgersWinsGames,
+      futureDodgerHomeGames: futureDodgerHomeGames,
+      pastAngelGamesWon: pastAngelWinsGames,
+      futureAngelHomeGames: futureAngelHomeGames,
     }
-    dodgersGameDataDateRange = newDodgersData
+
+    allGameData = newData
   } catch (error) {
     console.error("Failed", error)
   }
 }
 
+//route is todays-game
 export async function fetchAndProcessMLBData() {
   const date = todaysDate()
   const dodgersDate = dodgersDateMinusOne()
@@ -72,9 +93,8 @@ export async function fetchAndProcessMLBData() {
     const angelsData = await angelsResponse.json()
 
     const extractGameData = (data) => {
+      if (!data) return null
       const game = data.dates[0]?.games[0]
-      if (!game) return null
-
       return {
         officialDate: game.officialDate,
         homeTeamName: game.teams.home.team.name,
@@ -116,10 +136,9 @@ export async function fetchAndProcessMLBData() {
   }
 }
 
+export function getDodgerAndAngelsCachedGamesData() {
+  return allGameData
+}
 export function getCachedGameData() {
   return cachedGameData
-}
-
-export function getDodgersCachedGameData() {
-  return dodgersGameDataDateRange
 }
