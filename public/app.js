@@ -38,6 +38,32 @@ document.addEventListener("DOMContentLoaded", () => {
     .catch((error) => console.error("Error:", error))
 })
 
+document
+  .getElementById("subscriptionForm")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault()
+    const email = document.getElementById("email").value
+    try {
+      const response = await fetch("/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      })
+      const data = await response.json()
+      console.log(data, "data")
+      document.getElementById("message").textContent = data.message
+      if (response.ok) {
+        document.getElementById("email").value = ""
+      }
+    } catch (error) {
+      console.error("Error:", error)
+      document.getElementById("message").textContent =
+        "An error occurred. Please try again."
+    }
+  })
+
 const dodgerBadge = document.querySelector("#dodger-badge")
 const angelBadge = document.querySelector("#angel-badge")
 
