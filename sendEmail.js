@@ -5,10 +5,12 @@ AWS.config.update({
   secretAccessKey: process.env.AWS_SECRET_KEY,
   region: "us-west-1",
 })
-export function sendWinnerEmails(dodgersData) {
+
+export function sendWinnerEmails(dodgersData, emailList) {
+  console.log(emailList, "list")
   var params = {
     Destination: {
-      ToAddresses: ["smokiebacon@gmail.com"],
+      ToAddresses: emailList,
     },
     Message: {
       Body: {
@@ -31,8 +33,6 @@ export function sendWinnerEmails(dodgersData) {
 
   const ses = new AWS.SES({ apiVersion: "2010-12-01" })
 
-  //get subscribers from Database
-  //
   return ses
     .sendEmail(params)
     .promise()

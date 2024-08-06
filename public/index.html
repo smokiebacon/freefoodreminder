@@ -57,9 +57,13 @@
             </div>
           </div>
           <form id="subscriptionForm">
-            <input type="email" id="email" required placeholder="Enter your email">
-            <button type="submit">Subscribe</button>
-         </form>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Email address</label>
+              <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required placeholder="Enter email">
+              <small id="emailHelp" class="form-text text-muted">Subscribe to get alerted when Angels or Dodgers win for free food!</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
          <p id="message"></p>
 
           <!-- <form>

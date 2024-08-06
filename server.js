@@ -47,13 +47,8 @@ app.get("/", (req, res) => {
 
 app.post("/subscribe", async (req, res) => {
   try {
-    const { email } = req.body
     const createdEmail = await Subscription.create(req.body)
     createdEmail.save()
-    // console.log(createdEmail, 'created')
-    // const newSubscription = new Subscription({ email })
-    // await newSubscription.save()
-    console.log(createdEmail, "email")
     res.status(201).json({ message: "Subscription successful" })
   } catch (error) {
     if (error.code === 11000) {
@@ -65,6 +60,7 @@ app.post("/subscribe", async (req, res) => {
     }
   }
 })
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`)
 })

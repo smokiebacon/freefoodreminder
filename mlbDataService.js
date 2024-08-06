@@ -1,6 +1,7 @@
 import fetch from "node-fetch"
 import { sendWinnerEmails } from "./sendEmail.js"
 import { todaysDate, dodgersDateMinusOne, getMonthBoundaries } from "./date.js"
+import Subscription from "./models/Subscription.js"
 
 let cachedGameData = null
 let allGameData = null
@@ -114,16 +115,17 @@ export async function fetchAndProcessMLBData() {
       angels: extractGameData(angelsData),
     }
     cachedGameData = gameData
-
+    const allSubscribers = await Subscription.find().select("email")
+    const emailList = allSubscribers.map((sub) => sub.email)
     // Handle email sending here
-    // if (gameData.dodgers && gameData.dodgers.homeTeamWinner === true) {
-    //   try {
-    //     await sendWinnerEmails(gameData.dodgers)
-    //     console.log("Email sent successfully")
-    //   } catch (error) {
-    //     console.error("Failed to send email:", error)
-    //   }
-    // }
+    if (gameData.dodgers && gameData.dodgers.homeTeamWinner === true) {
+      try {
+        await sendWinnerEmails(gameData.dodgers, emailList)
+        console.log("Email sent successfully")
+      } catch (error) {
+        console.error("Failed to send email:", error)
+      }
+    }
     // Handle Chick-fil-A promotion
     if (
       gameData.angels &&
