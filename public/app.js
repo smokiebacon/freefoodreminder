@@ -89,7 +89,7 @@ function toggleAngelBadge(data) {
   if (angelBadge) {
     if (
       data.angels &&
-      data.angels.homeTeamName &&
+      data.angels.homeTeamName === "Los Angeles Angels" &&
       data.angels.homeTeamScore >= 7
     ) {
       angelBadge.innerHTML = "ACTIVE"

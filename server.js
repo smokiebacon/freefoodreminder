@@ -1,6 +1,7 @@
 import express from "express"
 import path from "path"
 import { getMonthBoundaries } from "./date.js"
+import { connectDB } from "./database.js"
 import {
   fetchAndProcessMLBData,
   getCachedGameData,
@@ -8,6 +9,7 @@ import {
   fetchDodgerAndAngelsSchedule,
 } from "./mlbDataService.js"
 const app = express()
+connectDB()
 const port = 3000
 
 // Serve static files from the 'public' directory

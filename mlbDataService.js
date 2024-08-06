@@ -10,7 +10,6 @@ export async function fetchDodgerAndAngelsSchedule() {
   let dodgersTeamId = 119
   let angelsTeamId = 108
   const resultDate = getMonthBoundaries()
-
   let dodgersURL = `https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=${resultDate.firstDay}&endDate=${resultDate.lastDay}&teamId=${dodgersTeamId}`
   let angelsURL = `https://statsapi.mlb.com/api/v1/schedule?hydrate=team,lineups&sportId=1&startDate=${resultDate.firstDay}&endDate=${resultDate.lastDay}&teamId=${angelsTeamId}`
 
@@ -22,6 +21,8 @@ export async function fetchDodgerAndAngelsSchedule() {
     ])
     const dodgersData = await dodgersResponse.json()
     const angelsData = await angelsResponse.json()
+    const todaysDodgerGame = []
+    const todaysAngelGame = []
     const pastDodgersWinsGames = []
     const futureDodgerHomeGames = []
     const pastAngelWinsGames = []
@@ -63,11 +64,13 @@ export async function fetchDodgerAndAngelsSchedule() {
     })
 
     const newData = {
+      todaysDodgerGame,
       pastDodgerGamesWon: pastDodgersWinsGames,
       futureDodgerHomeGames: futureDodgerHomeGames,
       pastAngelGamesWon: pastAngelWinsGames,
       futureAngelHomeGames: futureAngelHomeGames,
     }
+    console.log(newData.todaysDodgerGame)
 
     allGameData = newData
   } catch (error) {
@@ -93,7 +96,8 @@ export async function fetchAndProcessMLBData() {
     const angelsData = await angelsResponse.json()
 
     const extractGameData = (data) => {
-      if (!data) return null
+      if (data.traceId === null || data.dates.length === 0)
+        return "No Dodgers Game Today" //no game today, should display the next upcoming game
       const game = data.dates[0]?.games[0]
       return {
         officialDate: game.officialDate,
@@ -109,7 +113,6 @@ export async function fetchAndProcessMLBData() {
       dodgers: extractGameData(dodgersData),
       angels: extractGameData(angelsData),
     }
-
     cachedGameData = gameData
 
     // Handle email sending here
@@ -121,7 +124,6 @@ export async function fetchAndProcessMLBData() {
     //     console.error("Failed to send email:", error)
     //   }
     // }
-
     // Handle Chick-fil-A promotion
     if (
       gameData.angels &&
