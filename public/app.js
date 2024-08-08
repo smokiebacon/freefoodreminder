@@ -139,7 +139,6 @@ function displayPastDodgerGames(games) {
               <td>${new Date(game.gameDate).toLocaleString()}</td>
               <td>${game.teams.away.team.name}</td>
               <td>${game.teams.home.score} - ${game.teams.away.score}</td>
-              <td>${game.teams.home.score} - ${game.teams.away.score}</td>
               <td>${game.venue.name}</td>
               <td>${game.status.detailedState}</td>
           `

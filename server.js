@@ -3,6 +3,7 @@ import path from "path"
 import { getMonthBoundaries } from "./date.js"
 import { connectDB } from "./database.js"
 import bodyParser from "body-parser"
+import { sendSubscribeConfirmationEmail } from "./sendEmail.js"
 import Subscription from "./models/Subscription.js"
 import {
   fetchAndProcessMLBData,
@@ -49,11 +50,47 @@ app.post("/subscribe", async (req, res) => {
   try {
     const createdEmail = await Subscription.create(req.body)
     createdEmail.save()
+    function generateUnsubscribeLink(userId) {
+      // Convert ObjectId to its string representation
+      const userIdString = userId.toString()
+      return `http://localhost:3000/unsubscribe?id=${userIdString}`
+    }
+    const unsubscribeLink = generateUnsubscribeLink(createdEmail._id)
+    console.log(unsubscribeLink, "unsub")
+    const emailBodyHTML = `
+    <html>
+      <body>
+          <h1>Hurray!</h1>
+            <p>You are now subscribed to Free Food Reminder's email list.</p>
+            <p>To unsubscribe from future emails, <a href="${unsubscribeLink}">click here</a>.</p>
+      </body>
+    </html>
+    `
+    //send subscription confirmation email
+    sendSubscribeConfirmationEmail([createdEmail.email], emailBodyHTML)
     res.status(201).json({ message: "Subscription successful" })
   } catch (error) {
     if (error.code === 11000) {
       // Duplicate key error
       res.status(400).json({ message: "Email already subscribed" })
+    } else {
+      console.error("Subscription error:", error)
+      res.status(500).json({ message: "An error occurred during subscription" })
+    }
+  }
+})
+app.get(`/unsubscribe?:id`, async (req, res) => {
+  try {
+    console.log(req.params.id, "reqparamsid")
+    //need to somehow get ID
+    const foundOneEmail = await Subscription.findByIdAndDelete(req.params.id)
+    res
+      .status(201)
+      .json({ email: foundOneEmail, message: "Unsubscription successful" })
+  } catch (error) {
+    if (error.code === 11000) {
+      // Duplicate key error
+      res.status(400).json({ message: "Email already unsubscribed" })
     } else {
       console.error("Subscription error:", error)
       res.status(500).json({ message: "An error occurred during subscription" })
