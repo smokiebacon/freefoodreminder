@@ -81,9 +81,7 @@ app.post("/subscribe", async (req, res) => {
 })
 app.get(`/unsubscribe?:id`, async (req, res) => {
   try {
-    console.log(req.params.id, "reqparamsid")
-    //need to somehow get ID
-    const foundOneEmail = await Subscription.findByIdAndDelete(req.params.id)
+    const foundOneEmail = await Subscription.findByIdAndDelete(req.query.id)
     res
       .status(201)
       .json({ email: foundOneEmail, message: "Unsubscription successful" })
