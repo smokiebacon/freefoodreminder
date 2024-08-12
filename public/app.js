@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
       displayPastDodgerGames(data.pastDodgerGamesWon)
       displayUpcomingDodgerGames(data.futureDodgerHomeGames)
       displayAngelsUpcomingGames(data.futureAngelHomeGames)
+      displayAngelsPastWonHomeGames(data.pastAngelGamesWon)
     })
     .catch((error) => console.error("Error:", error))
 })
@@ -131,8 +132,6 @@ function toggleAngelBadge(data) {
 
 function displayPastDodgerGames(games) {
   const pastDodgerGameWinsTable = document.getElementById("dodgers-past-games")
-  const pastAngelsGameWinsTable = document.getElementById("angels-past-games")
-
   games.forEach((game) => {
     const row = document.createElement("tr")
     row.innerHTML = `
@@ -143,7 +142,29 @@ function displayPastDodgerGames(games) {
               <td>${game.status.detailedState}</td>
           `
     pastDodgerGameWinsTable.appendChild(row)
-    // pastAngelsGameWinsTable.appendChild(row)
+  })
+}
+
+function displayAngelsPastWonHomeGames(games) {
+  const pastAngelsGameWinsTable = document.getElementById("angels-past-games")
+  if (games.length === 0) {
+    const row = document.createElement("tr")
+    row.innerHTML = `
+    <td>Angels have not won any Home game with a score of 7 or more yet.</td>
+`
+    pastAngelsGameWinsTable.appendChild(row)
+  }
+  games.forEach((game) => {
+    const row = document.createElement("tr")
+    console.log(game, "game")
+    row.innerHTML = `
+              <td>${new Date(game.gameDate).toLocaleString()}</td>
+              <td>${game.teams.away.team.name}</td>
+              <td>${game.teams.home.score} - ${game.teams.away.score}</td>
+              <td>${game.venue.name}</td>
+              <td>${game.status.detailedState}</td>
+          `
+    pastAngelsGameWinsTable.appendChild(row)
   })
 }
 function displayUpcomingDodgerGames(games) {

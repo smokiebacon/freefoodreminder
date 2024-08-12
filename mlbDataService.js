@@ -51,10 +51,11 @@ export async function fetchDodgerAndAngelsSchedule() {
         const gameDate = new Date(game.gameDate)
         const isAngelHome = game.teams.home.team.id === angelsTeamId
         const isAngelHomeWin = game.teams.home.isWinner
+        const angelScore = game.teams.home.score
 
         if (gameDate < currentDate) {
           // Past game
-          if (angelsTeamId && isAngelHomeWin) {
+          if (angelsTeamId && isAngelHomeWin && angelScore >= 7) {
             pastAngelWinsGames.push({ ...game, isAngelsHome: true })
           }
         } else if (isAngelHome) {
@@ -71,7 +72,6 @@ export async function fetchDodgerAndAngelsSchedule() {
       pastAngelGamesWon: pastAngelWinsGames,
       futureAngelHomeGames: futureAngelHomeGames,
     }
-    console.log(newData.todaysDodgerGame)
 
     allGameData = newData
   } catch (error) {
@@ -154,8 +154,35 @@ export async function fetchAndProcessMLBData() {
       gameData.angels.homeTeamName &&
       gameData.angels.homeTeamScore >= 7
     ) {
-      console.log("Free Chick-fil-A sandwich")
-      // Implement logic to notify subscribers
+      const allSubscribers = await Subscription.find().select("_id email")
+      function generateUnsubscribeLink(userId) {
+        const userIdString = userId.toString()
+        return `http://freefoodreminder.com/unsubscribe?id=${userIdString}`
+      }
+
+      // Generate personalized emails for each subscriber
+      const personalizedEmails = allSubscribers.map((subscriber) => {
+        const unsubscribeLink = generateUnsubscribeLink(subscriber._id)
+        return {
+          email: subscriber.email,
+          html: `
+            <html>
+              <body>
+                <h1>Hurray!</h1>
+                <p>Angels won with a score of: ${cachedGameData.angels.homeTeamScore} to ${cachedGameData.angels.awayTeamScore} against the ${cachedGameData.angels.awayTeamName}</p>
+                <p>Open up the Chik-Fil-A app to redeem your free chicken sandwich by 11:59 PM!</p>
+                <p>To unsubscribe from future emails, <a href="${unsubscribeLink}">click here</a>.</p>
+              </body>
+            </html>
+          `,
+        }
+      })
+
+      try {
+        await sendWinnerEmails(personalizedEmails)
+      } catch (error) {
+        console.error("Failed to send email:", error)
+      } // Implement logic to notify subscribers
     }
   } catch (error) {
     console.error("Error fetching MLB data:", error)

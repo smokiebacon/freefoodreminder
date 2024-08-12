@@ -53,7 +53,7 @@ app.post("/subscribe", async (req, res) => {
     function generateUnsubscribeLink(userId) {
       // Convert ObjectId to its string representation
       const userIdString = userId.toString()
-      return `http://localhost:3000/unsubscribe?id=${userIdString}`
+      return `http://freefoodreminder.com/unsubscribe?id=${userIdString}`
     }
     const unsubscribeLink = generateUnsubscribeLink(createdEmail._id)
     const emailBodyHTML = `
