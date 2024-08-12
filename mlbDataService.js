@@ -115,32 +115,35 @@ export async function fetchAndProcessMLBData() {
       angels: extractGameData(angelsData),
     }
     cachedGameData = gameData
-    const allSubscribers = await Subscription.find().select("email")
-    const emailList = allSubscribers.map((sub) => sub.email)
+
     // Handle email sending here
     if (gameData.dodgers && gameData.dodgers.homeTeamWinner === true) {
-      //get ObjectID of email in MONGO
-      // async function generateUnsubscribeLink(userId) {
-      //   // Convert ObjectId to its string representation
-      //   const userIdString = userId.toString()
-      //   console.log(userIdString, "userIdString")
-      //   await Subscription.findByIdAndDelete(userIdString)
-      //   return `https://yourdomain.com/unsubscribe?id=${userIdString}`
-      // }
-      // const unsubscribeLink = generateUnsubscribeLink(createdEmail._id)
+      const allSubscribers = await Subscription.find().select("_id email")
+      function generateUnsubscribeLink(userId) {
+        const userIdString = userId.toString()
+        return `http://freefoodreminder.com/unsubscribe?id=${userIdString}`
+      }
+
+      // Generate personalized emails for each subscriber
+      const personalizedEmails = allSubscribers.map((subscriber) => {
+        const unsubscribeLink = generateUnsubscribeLink(subscriber._id)
+        return {
+          email: subscriber.email,
+          html: `
+            <html>
+              <body>
+                <h1>Hurray!</h1>
+                <p>Dodgers won yesterday with a score of: ${cachedGameData.dodgers.homeTeamScore} to ${cachedGameData.dodgers.awayTeamScore} against the ${cachedGameData.dodgers.awayTeamName}</p>
+                <p>Use coupon code "dodgerswin" in the Panda Express app to redeem your Panda Plate!</p>
+                <p>To unsubscribe from future emails, <a href="${unsubscribeLink}">click here</a>.</p>
+              </body>
+            </html>
+          `,
+        }
+      })
 
       try {
-        const emailDodgerWinsBodyHTML = `
-          <html>
-            <body>
-                <h1>Hurray!</h1>
-                  <p>Dodgers won yesterday with a score of: ${cachedGameData.dodgers.homeTeamScore} to ${cachedGameData.dodgers.awayTeamScore} against the ${cachedGameData.dodgers.awayTeamName}</p>
-                  <p>Use coupon code "dodgerswin" in the Panda Express app to redeem your Panda Plate!</p>
-                  <p>To unsubscribe from future emails, <a href="${unsubscribeLink}">click here</a>.</p>
-            </body>
-          </html>
-          `
-        await sendWinnerEmails(emailList, emailDodgerWinsBodyHTML)
+        await sendWinnerEmails(personalizedEmails)
       } catch (error) {
         console.error("Failed to send email:", error)
       }

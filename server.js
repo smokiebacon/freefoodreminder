@@ -56,7 +56,6 @@ app.post("/subscribe", async (req, res) => {
       return `http://localhost:3000/unsubscribe?id=${userIdString}`
     }
     const unsubscribeLink = generateUnsubscribeLink(createdEmail._id)
-    console.log(unsubscribeLink, "unsub")
     const emailBodyHTML = `
     <html>
       <body>
