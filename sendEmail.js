@@ -37,8 +37,10 @@ export function sendSubscribeConfirmationEmail(email, emailBodyHTML) {
     .sendEmail(params)
     .promise()
     .then(function (data) {
-      console.log(data.MessageId)
-      console.log("Subscription Confirmation email sent")
+      console.log(
+        params.Destination.ToAddresses,
+        "Subscription Confirmation email sent"
+      )
       return data
     })
     .catch(function (err) {
@@ -78,8 +80,7 @@ export function sendWinnerEmails(personalizedEmails) {
       .sendEmail(params)
       .promise()
       .then(function (data) {
-        console.log(data.MessageId)
-        console.log("Dodger Winner Email Sent")
+        console.log(params.Destination.ToAddresses, "Dodger Winneremail sent")
         return data
       })
       .catch(function (err) {
