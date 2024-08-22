@@ -13,7 +13,7 @@ const SubscriptionSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  lastSentDate: { type: Date, required: true },
+  lastSentDate: { type: Date, default: null },
 })
 
 const Subscription = mongoose.model("Subscription", SubscriptionSchema)
