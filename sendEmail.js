@@ -78,7 +78,7 @@ export async function sendWinnerEmails(personalizedEmails) {
         },
         Subject: {
           Charset: "UTF-8",
-          Data: "Dodgers Won Yesterday! Panda Express coupon code is active.",
+          Data: "Dodgers Won! Panda Express coupon code will be active tomorrow.",
         },
       },
       Source: "Free Food Reminder <smokiebacon@gmail.com>",
