@@ -102,13 +102,14 @@ function toggleDodgerBadge(data) {
     let dodgerOfficialDate = data.dodgers.officialDate
     let todaysDate = new Date().toISOString().split("T")[0]
     let date = new Date(todaysDate)
-    date.setDate(date.getDate() + 1)
-    let tomorrowsDate = date.toISOString().split("T")[0]
+    date.setDate(date.getDate() - 1)
+    let yesterdaysDate = date.toISOString().split("T")[0]
+
     if (
       data.dodgers &&
       data.dodgers.homeTeamName == "Los Angeles Dodgers" &&
       data.dodgers.homeTeamWinner === true &&
-      tomorrowsDate === dodgerOfficialDate
+      yesterdaysDate === dodgerOfficialDate
     ) {
       dodgerBadge.innerHTML = "ACTIVE"
       dodgerBadge.classList.add("text-bg-success")
