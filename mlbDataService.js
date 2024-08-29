@@ -181,7 +181,7 @@ export async function fetchAndProcessMLBData() {
       try {
         await sendWinnerEmails(personalizedEmails)
       } catch (error) {
-        console.error("Failed to send email:", error)
+        console.error("Failed to send Angels email:", error)
       } // Implement logic to notify subscribers
     }
   } catch (error) {

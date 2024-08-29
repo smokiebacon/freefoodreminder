@@ -98,10 +98,17 @@ function displayTodaysGameResults(data) {
 
 function toggleDodgerBadge(data) {
   if (dodgerBadge) {
+    //make sure badge is ACTIVE the day AFTER Dodgers win
+    let dodgerOfficialDate = data.dodgers.officialDate
+    let todaysDate = new Date().toISOString().split("T")[0]
+    let date = new Date(todaysDate)
+    date.setDate(date.getDate() + 1)
+    let tomorrowsDate = date.toISOString().split("T")[0]
     if (
       data.dodgers &&
       data.dodgers.homeTeamName == "Los Angeles Dodgers" &&
-      data.dodgers.homeTeamWinner === true
+      data.dodgers.homeTeamWinner === true &&
+      tomorrowsDate === dodgerOfficialDate
     ) {
       dodgerBadge.innerHTML = "ACTIVE"
       dodgerBadge.classList.add("text-bg-success")
@@ -156,7 +163,6 @@ function displayAngelsPastWonHomeGames(games) {
   }
   games.forEach((game) => {
     const row = document.createElement("tr")
-    console.log(game, "game")
     row.innerHTML = `
               <td>${new Date(game.gameDate).toLocaleString()}</td>
               <td>${game.teams.away.team.name}</td>
