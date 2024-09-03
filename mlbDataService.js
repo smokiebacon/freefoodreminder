@@ -117,7 +117,11 @@ export async function fetchAndProcessMLBData() {
     cachedGameData = gameData
 
     // Handle email sending here
-    if (gameData.dodgers && gameData.dodgers.homeTeamWinner === true) {
+    if (
+      gameData.dodgers &&
+      gameData.dodgers.homeTeamName == "Los Angeles Dodgers" &&
+      gameData.dodgers.homeTeamWinner === true
+    ) {
       const allSubscribers = await Subscription.find().select("_id email")
       function generateUnsubscribeLink(userId) {
         const userIdString = userId.toString()
@@ -151,7 +155,7 @@ export async function fetchAndProcessMLBData() {
     // Handle Chick-fil-A promotion
     if (
       gameData.angels &&
-      gameData.angels.homeTeamName &&
+      gameData.angels.homeTeamName === "Los Angeles Angels" &&
       gameData.angels.homeTeamScore >= 7
     ) {
       const allSubscribers = await Subscription.find().select("_id email")
