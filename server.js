@@ -6,7 +6,7 @@ import bodyParser from "body-parser"
 import { sendSubscribeConfirmationEmail } from "./sendEmail.js"
 import Subscription from "./models/Subscription.js"
 import {
-  fetchAndProcessMLBData,
+  fetchAndProcessTodaysMLBData,
   getCachedGameData,
   getDodgerAndAngelsCachedGamesData,
   fetchDodgerAndAngelsSchedule,
@@ -20,12 +20,13 @@ app.use(express.static("public"))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-fetchAndProcessMLBData()
+fetchAndProcessTodaysMLBData()
 fetchDodgerAndAngelsSchedule()
 
 app.get("/todays-game", (req, res) => {
   const gameData = getCachedGameData()
   if (gameData) {
+    console.log(gameData)
     res.json(gameData)
   } else {
     res.status(503).json({ error: "Data nost available yet" })

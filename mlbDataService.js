@@ -67,6 +67,7 @@ export async function fetchDodgerAndAngelsSchedule() {
 
     const newData = {
       todaysDodgerGame,
+      todaysAngelGame,
       pastDodgerGamesWon: pastDodgersWinsGames,
       futureDodgerHomeGames: futureDodgerHomeGames,
       pastAngelGamesWon: pastAngelWinsGames,
@@ -80,8 +81,9 @@ export async function fetchDodgerAndAngelsSchedule() {
 }
 
 //route is todays-game
-export async function fetchAndProcessMLBData() {
+export async function fetchAndProcessTodaysMLBData() {
   const date = todaysDate()
+  console.log(date, "date")
   const dodgersDate = dodgersDateMinusOne()
   let dodgersTeamId = 119
   let angelsTeamId = 108
@@ -115,6 +117,7 @@ export async function fetchAndProcessMLBData() {
       angels: extractGameData(angelsData),
     }
     cachedGameData = gameData
+    console.log(cachedGameData, "todaysGameData")
 
     // Handle email sending here
     if (
@@ -147,7 +150,7 @@ export async function fetchAndProcessMLBData() {
       })
 
       try {
-        // await sendWinnerEmails(personalizedEmails)
+        await sendWinnerEmails(personalizedEmails)
       } catch (error) {
         console.error("Failed to send email:", error)
       }
@@ -158,8 +161,6 @@ export async function fetchAndProcessMLBData() {
       gameData.angels.homeTeamName === "Los Angeles Angels" &&
       gameData.angels.homeTeamScore >= 7
     ) {
-      let team = gameData.angels.homeTeamName
-      console.log(team, "teamName")
       const allSubscribers = await Subscription.find().select("_id email")
       function generateUnsubscribeLink(userId) {
         const userIdString = userId.toString()
@@ -185,7 +186,8 @@ export async function fetchAndProcessMLBData() {
       })
 
       try {
-        // await sendWinnerEmails(personalizedEmails, team)
+        let team = gameData.angels.homeTeamName
+        await sendWinnerEmails(personalizedEmails, team)
       } catch (error) {
         console.error("Failed to send Angels email:", error)
       } // Implement logic to notify subscribers

@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return response.json()
     })
     .then((data) => {
+      console.log(data, "data")
+      console.log(Intl.DateTimeFormat().resolvedOptions().timeZone, "asd")
       toggleDodgerBadge(data)
       toggleAngelBadge(data)
       displayTodaysGameResults(data)
