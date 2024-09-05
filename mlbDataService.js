@@ -147,7 +147,7 @@ export async function fetchAndProcessMLBData() {
       })
 
       try {
-        await sendWinnerEmails(personalizedEmails)
+        // await sendWinnerEmails(personalizedEmails)
       } catch (error) {
         console.error("Failed to send email:", error)
       }
@@ -158,6 +158,8 @@ export async function fetchAndProcessMLBData() {
       gameData.angels.homeTeamName === "Los Angeles Angels" &&
       gameData.angels.homeTeamScore >= 7
     ) {
+      let team = gameData.angels.homeTeamName
+      console.log(team, "teamName")
       const allSubscribers = await Subscription.find().select("_id email")
       function generateUnsubscribeLink(userId) {
         const userIdString = userId.toString()
@@ -173,7 +175,7 @@ export async function fetchAndProcessMLBData() {
             <html>
               <body>
                 <h1>Hurray!</h1>
-                <p>Angels won with a score of: ${cachedGameData.angels.homeTeamScore} to ${cachedGameData.angels.awayTeamScore} against the ${cachedGameData.angels.awayTeamName}</p>
+                <p>${gameData.angels.homeTeamName} won with a score of: ${cachedGameData.angels.homeTeamScore} to ${cachedGameData.angels.awayTeamScore} against the ${cachedGameData.angels.awayTeamName}</p>
                 <p>Open up the Chik-Fil-A app to redeem your free chicken sandwich by 11:59 PM!</p>
                 <p>To unsubscribe from future emails, <a href="${unsubscribeLink}">click here</a>.</p>
               </body>
@@ -183,7 +185,7 @@ export async function fetchAndProcessMLBData() {
       })
 
       try {
-        await sendWinnerEmails(personalizedEmails)
+        // await sendWinnerEmails(personalizedEmails, team)
       } catch (error) {
         console.error("Failed to send Angels email:", error)
       } // Implement logic to notify subscribers

@@ -49,7 +49,7 @@ export function sendSubscribeConfirmationEmail(email, emailBodyHTML) {
       throw err
     })
 }
-export async function sendWinnerEmails(personalizedEmails) {
+export async function sendWinnerEmails(personalizedEmails, team) {
   const ses = new AWS.SES({ apiVersion: "2010-12-01" })
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -61,6 +61,9 @@ export async function sendWinnerEmails(personalizedEmails) {
       results.push({ email, status: "skipped" })
       continue
     }
+    let angelsMessage = `${team} won! Open the Chik-Fil-A app by 11:59 PM today to get your free chicken sandwich."`
+    let dodgersMessage = `${team} won! Panda Express coupon code will be active tomorrow"`
+
     var params = {
       Destination: {
         ToAddresses: [email],
@@ -78,7 +81,7 @@ export async function sendWinnerEmails(personalizedEmails) {
         },
         Subject: {
           Charset: "UTF-8",
-          Data: "Dodgers Won! Panda Express coupon code will be active tomorrow.",
+          Data: team === "Los Angeles Angels" ? angelsMessage : dodgersMessage,
         },
       },
       Source: "Free Food Reminder <smokiebacon@gmail.com>",
@@ -86,7 +89,7 @@ export async function sendWinnerEmails(personalizedEmails) {
 
     try {
       const data = await ses.sendEmail(params).promise()
-      console.log(email, "Dodger Winner email sent")
+      console.log(email, `${team} Winner email sent"`)
       if (tracker) {
         tracker.lastSentDate = new Date()
         await tracker.save()
