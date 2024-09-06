@@ -83,7 +83,6 @@ export async function fetchDodgerAndAngelsSchedule() {
 //route is todays-game
 export async function fetchAndProcessTodaysMLBData() {
   const date = todaysDate()
-  console.log(date, "date")
   const dodgersDate = dodgersDateMinusOne()
   let dodgersTeamId = 119
   let angelsTeamId = 108
@@ -117,7 +116,6 @@ export async function fetchAndProcessTodaysMLBData() {
       angels: extractGameData(angelsData),
     }
     cachedGameData = gameData
-    console.log(cachedGameData, "todaysGameData")
 
     // Handle email sending here
     if (
@@ -132,6 +130,7 @@ export async function fetchAndProcessTodaysMLBData() {
       }
 
       // Generate personalized emails for each subscriber
+
       const personalizedEmails = allSubscribers.map((subscriber) => {
         const unsubscribeLink = generateUnsubscribeLink(subscriber._id)
         return {
@@ -150,7 +149,8 @@ export async function fetchAndProcessTodaysMLBData() {
       })
 
       try {
-        await sendWinnerEmails(personalizedEmails)
+        let team = gameData.dodgers.homeTeamName
+        await sendWinnerEmails(personalizedEmails, team)
       } catch (error) {
         console.error("Failed to send email:", error)
       }
