@@ -55,7 +55,7 @@ export async function fetchDodgerAndAngelsSchedule() {
 
         if (gameDate < currentDate) {
           // Past game
-          if (angelsTeamId && isAngelHomeWin && angelScore >= 7) {
+          if (isAngelHome && isAngelHomeWin && angelScore >= 7) {
             pastAngelWinsGames.push({ ...game, isAngelsHome: true })
           }
         } else if (isAngelHome) {
