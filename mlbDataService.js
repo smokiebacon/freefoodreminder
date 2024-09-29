@@ -50,12 +50,11 @@ export async function fetchDodgerAndAngelsSchedule() {
       date.games.forEach((game) => {
         const gameDate = new Date(game.gameDate)
         const isAngelHome = game.teams.home.team.id === angelsTeamId
-        const isAngelHomeWin = game.teams.home.isWinner
         const angelScore = game.teams.home.score
 
         if (gameDate < currentDate) {
           // Past game
-          if (isAngelHome && isAngelHomeWin && angelScore >= 7) {
+          if (isAngelHome && angelScore >= 7) {
             pastAngelWinsGames.push({ ...game, isAngelsHome: true })
           }
         } else if (isAngelHome) {
@@ -176,7 +175,7 @@ export async function fetchAndProcessTodaysMLBData() {
             <html>
               <body>
                 <h1>Hurray!</h1>
-                <p>${gameData.angels.homeTeamName} won with a score of: ${cachedGameData.angels.homeTeamScore} to ${cachedGameData.angels.awayTeamScore} against the ${cachedGameData.angels.awayTeamName}</p>
+                <p>The ${gameData.angels.homeTeamName} scored at least a 7 at Home! On ${cachedGameData.angels.officialDate}, the final score was: ${cachedGameData.angels.homeTeamScore} to ${cachedGameData.angels.awayTeamScore} against the ${cachedGameData.angels.awayTeamName}.</p>
                 <p>Open up the Chik-Fil-A app to redeem your free chicken sandwich by 11:59 PM!</p>
                 <p>To unsubscribe from future emails, <a href="${unsubscribeLink}">click here</a>.</p>
               </body>
