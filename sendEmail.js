@@ -61,7 +61,7 @@ export async function sendWinnerEmails(personalizedEmails, team) {
       results.push({ email, status: "skipped" })
       continue
     }
-    let angelsMessage = `${team} won! Open the Chik-Fil-A app by 11:59 PM today to get your free chicken sandwich."`
+    let angelsMessage = `${team} scored at least a 7! Open the Chik-Fil-A app by 11:59 PM today to get your free chicken sandwich."`
     let dodgersMessage = `${team} won! Panda Express coupon code will be active tomorrow"`
 
     var params = {
