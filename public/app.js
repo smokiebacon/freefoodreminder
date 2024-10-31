@@ -83,32 +83,21 @@ function displayTodaysGameResults(data) {
         ? `
             <div class="card shadow-sm">
               <div class="card-body text-center">
-                <h5 class="card-title text-muted mb-3">${
-                  dodgersData.officialDate
-                }</h5>
+                <h5 class="card-title text-muted mb-3">${dodgersData.officialDate}</h5>
                 <div class="row align-items-center">
                   <div class="col">
+                    <p>Home Team:</p>
                     <h6 class="mb-0">${dodgersData.homeTeamName}</h6>
-                    <h3 class="display-4 fw-bold">${
-                      dodgersData.homeTeamScore
-                    }</h3>
+                    <h3 class="display-4 fw-bold">${dodgersData.homeTeamScore}</h3>
                   </div>
                   <div class="col-auto">
                     <h4 class="mb-0">VS</h4>
                   </div>
                   <div class="col">
+                    <p>Away Team:</p>
                     <h6 class="mb-0">${dodgersData.awayTeamName}</h6>
-                    <h3 class="display-4 fw-bold">${
-                      dodgersData.awayTeamScore
-                    }</h3>
+                    <h3 class="display-4 fw-bold">${dodgersData.awayTeamScore}</h3>
                   </div>
-                </div>
-                <div class="mt-3">
-                  <span class="badge ${
-                    dodgersData.homeTeamWinner ? "bg-success" : "bg-danger"
-                  }">
-                    ${dodgersData.homeTeamWinner ? "Winner" : "Lost"}
-                  </span>
                 </div>
               </div>
             </div>`
