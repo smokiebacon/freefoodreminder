@@ -98,7 +98,7 @@ export async function fetchAndProcessTodaysMLBData() {
 
     const extractGameData = (data) => {
       if (data.traceId === null || data.dates.length === 0)
-        return "No Dodgers Game Today" //no game today, should display the next upcoming game
+        return "No Game Today" //no game today, should display the next upcoming game
       const game = data.dates[0]?.games[0]
       return {
         officialDate: game.officialDate,

@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then((data) => {
       console.log(data, "data")
-      console.log(Intl.DateTimeFormat().resolvedOptions().timeZone, "asd")
+      console.log(Intl.DateTimeFormat().resolvedOptions().timeZone, "timezone")
       toggleDodgerBadge(data)
       toggleAngelBadge(data)
       displayTodaysGameResults(data)
@@ -77,24 +77,81 @@ function displayTodaysGameResults(data) {
   if (data) {
     const dodgersData = data.dodgers
     const angelsData = data.angels
-    dodgerDiv.innerHTML = `
-            <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${dodgersData.officialDate}</p>
-            <p>Home Team: ${dodgersData.homeTeamName}</p>
-            <p>Home Team Score: ${dodgersData.homeTeamScore}</p>
-            <p>Home Team Winner: ${dodgersData.homeTeamWinner}</p>
-            <p>Away Team: ${dodgersData.awayTeamName}</p>
-            <p>Away Team Score: ${dodgersData.awayTeamScore}</>
-        `
-    angelsDiv.innerHTML = `
-      <p class="col-lg-8 mx-auto fs-5 text-muted">Game Date: ${angelsData.officialDate}</p>
-      <p>Home Team: ${angelsData.homeTeamName}</p>
-      <p>Home Team Score: ${angelsData.homeTeamScore}</p>
-      <p>Home Team Winner: ${angelsData.homeTeamWinner}</p>
-      <p>Away Team: ${angelsData.awayTeamName}</p>
-      <p>Away Team Score: ${angelsData.awayTeamScore}</>
-  `
+
+    dodgerDiv.innerHTML =
+      dodgersData && typeof dodgersData === "object"
+        ? `
+            <div class="card shadow-sm">
+              <div class="card-body text-center">
+                <h5 class="card-title text-muted mb-3">${
+                  dodgersData.officialDate
+                }</h5>
+                <div class="row align-items-center">
+                  <div class="col">
+                    <h6 class="mb-0">${dodgersData.homeTeamName}</h6>
+                    <h3 class="display-4 fw-bold">${
+                      dodgersData.homeTeamScore
+                    }</h3>
+                  </div>
+                  <div class="col-auto">
+                    <h4 class="mb-0">VS</h4>
+                  </div>
+                  <div class="col">
+                    <h6 class="mb-0">${dodgersData.awayTeamName}</h6>
+                    <h3 class="display-4 fw-bold">${
+                      dodgersData.awayTeamScore
+                    }</h3>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <span class="badge ${
+                    dodgersData.homeTeamWinner ? "bg-success" : "bg-danger"
+                  }">
+                    ${dodgersData.homeTeamWinner ? "Winner" : "Lost"}
+                  </span>
+                </div>
+              </div>
+            </div>`
+        : `<div class="alert alert-info">No Game Today</div>`
+
+    angelsDiv.innerHTML =
+      angelsData && typeof angelsData === "object"
+        ? `
+            <div class="card shadow-sm">
+              <div class="card-body text-center">
+                <h5 class="card-title text-muted mb-3">${
+                  angelsData.officialDate
+                }</h5>
+                <div class="row align-items-center">
+                  <div class="col">
+                    <h6 class="mb-0">${angelsData.homeTeamName}</h6>
+                    <h3 class="display-4 fw-bold">${
+                      angelsData.homeTeamScore
+                    }</h3>
+                  </div>
+                  <div class="col-auto">
+                    <h4 class="mb-0">VS</h4>
+                  </div>
+                  <div class="col">
+                    <h6 class="mb-0">${angelsData.awayTeamName}</h6>
+                    <h3 class="display-4 fw-bold">${
+                      angelsData.awayTeamScore
+                    }</h3>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <span class="badge ${
+                    angelsData.homeTeamWinner ? "bg-success" : "bg-danger"
+                  }">
+                    ${angelsData.homeTeamWinner ? "Winner" : "Lost"}
+                  </span>
+                </div>
+              </div>
+            </div>`
+        : `<div class="alert alert-info">No Game Today</div>`
   } else {
-    console.log("No Game")
+    dodgerDiv.innerHTML = `<div class="alert alert-info">No Game Today</div>`
+    angelsDiv.innerHTML = `<div class="alert alert-info">No Game Today</div>`
   }
 }
 
@@ -200,6 +257,13 @@ function displayAngelsUpcomingGames(games) {
   const upcomingAngelsGamesTable = document.getElementById(
     "angels-upcoming-games"
   )
+  if (!games) return
+  const upcomingGamesTable = document.getElementById("angels-upcoming-games")
+  if (games.length === 0) {
+    const displayNoGamesRow = document.createElement("div")
+    displayNoGamesRow.innerHTML = "No Upcoming Games"
+    upcomingGamesTable.appendChild(displayNoGamesRow)
+  }
   games.forEach((game) => {
     const row = document.createElement("tr")
     row.innerHTML = `
