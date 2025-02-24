@@ -83,12 +83,16 @@ function displayTodaysGameResults(data) {
         ? `
             <div class="card shadow-sm">
               <div class="card-body text-center">
-                <h5 class="card-title text-muted mb-3">${dodgersData.officialDate}</h5>
+                <h5 class="card-title text-muted mb-3">${
+                  dodgersData.officialDate
+                }</h5>
                 <div class="row align-items-center">
                   <div class="col">
                     <p>Home Team:</p>
                     <h6 class="mb-0">${dodgersData.homeTeamName}</h6>
-                    <h3 class="display-4 fw-bold">${dodgersData.homeTeamScore}</h3>
+                    <h3 class="display-4 fw-bold">${
+                      dodgersData.homeTeamScore
+                    }</h3>
                   </div>
                   <div class="col-auto">
                     <h4 class="mb-0">VS</h4>
@@ -96,9 +100,18 @@ function displayTodaysGameResults(data) {
                   <div class="col">
                     <p>Away Team:</p>
                     <h6 class="mb-0">${dodgersData.awayTeamName}</h6>
-                    <h3 class="display-4 fw-bold">${dodgersData.awayTeamScore}</h3>
+                    <h3 class="display-4 fw-bold">${
+                      dodgersData.awayTeamScore
+                    }</h3>
                   </div>
                 </div>
+
+                <div class="mt-3">
+                  <span class="badge ${
+                    dodgersData.homeTeamWinner ? "bg-success" : "bg-danger"
+                  }">
+                    ${dodgersData.homeTeamWinner ? "Winner" : "Lost"}
+                  </span>
               </div>
             </div>`
         : `<div class="alert alert-info">No Game Today</div>`;
@@ -130,10 +143,25 @@ function displayTodaysGameResults(data) {
                 </div>
                 <div class="mt-3">
                   <span class="badge ${
-                    angelsData.homeTeamWinner ? "bg-success" : "bg-danger"
+                    angelsData.homeTeamWinner !== undefined
+                      ? angelsData.homeTeamWinner
+                        ? "bg-success"
+                        : "bg-danger"
+                      : ""
                   }">
-                    ${angelsData.homeTeamWinner ? "Winner" : "Lost"}
+                    ${
+                      angelsData.homeTeamWinner !== undefined
+                        ? angelsData.homeTeamWinner
+                          ? "Winner"
+                          : "Lost"
+                        : ""
+                    }
                   </span>
+                  ${
+                    angelsData.homeTeamWinner === undefined
+                      ? '<button class="btn btn-warning" id="live-game-button">Game is Live!</button>'
+                      : ""
+                  }
                 </div>
               </div>
             </div>`
