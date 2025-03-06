@@ -22,7 +22,7 @@ const port = 3000;
 app.use(
   "/yelp-randomizer",
   createProxyMiddleware({
-    target: "https://your-app-name.onrender.com",
+    target: "https://yelprandomizer.onrender.com",
     changeOrigin: true,
     pathRewrite: {
       "^/yelp-randomizer": "/yelp-randomizer",
