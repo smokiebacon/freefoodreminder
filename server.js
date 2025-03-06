@@ -11,11 +11,25 @@ import {
   getDodgerAndAngelsCachedGamesData,
   fetchDodgerAndAngelsSchedule,
 } from "./mlbDataService.js";
+import { createProxyMiddleware } from "http-proxy-middleware";
+
 const app = express();
 connectDB();
 const port = 3000;
 
 // Serve static files from the 'public' directory
+// Add this before your other routes
+app.use(
+  "/yelp-randomizer",
+  createProxyMiddleware({
+    target: "https://your-app-name.onrender.com",
+    changeOrigin: true,
+    pathRewrite: {
+      "^/yelp-randomizer": "/yelp-randomizer",
+    },
+  })
+);
+
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
