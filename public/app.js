@@ -77,7 +77,7 @@ function displayTodaysGameResults(data) {
   if (data) {
     const dodgersData = data.dodgers;
     const angelsData = data.angels;
-
+    console.log(dodgersData.homeTeamName);
     dodgerDiv.innerHTML =
       dodgersData && typeof dodgersData === "object"
         ? `
@@ -105,6 +105,7 @@ function displayTodaysGameResults(data) {
                     }</h3>
                   </div>
                 </div>
+                <p>at ${dodgersData.venue}</p>
 
                 <div class="mt-3">
                   <span class="badge ${
@@ -126,6 +127,7 @@ function displayTodaysGameResults(data) {
                 }</h5>
                 <div class="row align-items-center">
                   <div class="col">
+                    <p>Home Team:</p>
                     <h6 class="mb-0">${angelsData.homeTeamName}</h6>
                     <h3 class="display-4 fw-bold">${
                       angelsData.homeTeamScore
@@ -135,12 +137,14 @@ function displayTodaysGameResults(data) {
                     <h4 class="mb-0">VS</h4>
                   </div>
                   <div class="col">
+                    <p>Away Team:</p>
                     <h6 class="mb-0">${angelsData.awayTeamName}</h6>
                     <h3 class="display-4 fw-bold">${
                       angelsData.awayTeamScore
                     }</h3>
                   </div>
                 </div>
+                <p>at ${angelsData.venue}</p>
                 <div class="mt-3">
                   <span class="badge ${
                     angelsData.homeTeamWinner !== undefined

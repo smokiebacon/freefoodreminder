@@ -31,13 +31,12 @@ export async function fetchDodgerAndAngelsSchedule() {
     dodgersData.dates.forEach((date) => {
       date.games.forEach((game) => {
         const gameDate = new Date(game.gameDate);
-        const isDodgersHome = game.teams.home.team.id === dodgersTeamId;
-        const isDodgersHomeWin = game.teams.home.isWinner;
+        const isDodgersHome = game.venue.name === "Dodger Stadium";
 
         if (gameDate < currentDate) {
           // Past game
-          if (isDodgersHome && isDodgersHomeWin) {
-            pastDodgersWinsGames.push({ ...game, isDodgersHome: true });
+          if (isDodgersHome && game.teams.home.isWinner) {
+            pastDodgersWinsGames.push(game);
           }
         } else if (isDodgersHome) {
           // Future home game
@@ -49,7 +48,7 @@ export async function fetchDodgerAndAngelsSchedule() {
     angelsData.dates.forEach((date) => {
       date.games.forEach((game) => {
         const gameDate = new Date(game.gameDate);
-        const isAngelHome = game.teams.home.team.id === angelsTeamId;
+        const isAngelHome = game.venue.name === "Angel Stadium";
         const angelScore = game.teams.home.score;
 
         if (gameDate < currentDate) {
@@ -108,6 +107,7 @@ export async function fetchAndProcessTodaysMLBData() {
         awayTeamName: game.teams.away.team.name,
         awayTeamScore: game.teams.away.score,
         awayTeamWinner: game.teams.away.isWinner,
+        venue: game.venue.name,
       };
     };
     const gameData = {
