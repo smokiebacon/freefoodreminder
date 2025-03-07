@@ -31,7 +31,7 @@ app.use(
 );
 
 app.use(express.static("public"));
-app.use("/yelp-randomizer", express.static(path.join(__dirname, "/")));
+// app.use("/yelp-randomizer", express.static(path.join(__dirname, "/")));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
