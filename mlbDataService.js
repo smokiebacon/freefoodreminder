@@ -84,7 +84,7 @@ export async function fetchAndProcessTodaysMLBData() {
   const dodgersDate = dodgersDateMinusOne();
   let dodgersTeamId = 119;
   let angelsTeamId = 108;
-  const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${dodgersTeamId}`;
+  const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${dodgersDate}&teamId=${dodgersTeamId}`;
   const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${angelsTeamId}`;
 
   try {
