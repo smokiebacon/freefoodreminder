@@ -115,7 +115,7 @@ function displayTodaysGameResults(data) {
                   </span>
               </div>
             </div>`
-        : `<div class="alert alert-info">No Game Today</div>`;
+        : `<div class="alert alert-info">No Game Yesterday</div>`;
 
     angelsDiv.innerHTML =
       angelsData && typeof angelsData === "object"

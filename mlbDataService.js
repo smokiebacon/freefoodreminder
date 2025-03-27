@@ -84,7 +84,7 @@ export async function fetchAndProcessTodaysMLBData() {
   const dodgersDate = dodgersDateMinusOne();
   let dodgersTeamId = 119;
   let angelsTeamId = 108;
-  const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${dodgersDate}&teamId=${dodgersTeamId}`;
+  const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${dodgersTeamId}`;
   const url2 = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&date=${date}&teamId=${angelsTeamId}`;
 
   try {
@@ -94,7 +94,6 @@ export async function fetchAndProcessTodaysMLBData() {
     ]);
     const dodgersData = await dodgersResponse.json();
     const angelsData = await angelsResponse.json();
-
     const extractGameData = (data) => {
       if (data.traceId === null || data.dates.length === 0)
         return "No Game Today"; //no game today, should display the next upcoming game
