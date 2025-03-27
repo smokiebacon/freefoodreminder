@@ -139,7 +139,7 @@ export async function fetchAndProcessTodaysMLBData() {
               <body>
                 <h1>Hurray!</h1>
                 <p>Dodgers won on ${cachedGameData.dodgers.officialDate} with a score of: ${cachedGameData.dodgers.homeTeamScore} to ${cachedGameData.dodgers.awayTeamScore} against the ${cachedGameData.dodgers.awayTeamName}</p>
-                <p>Use coupon code "dodgerswin" in the Panda Express app tomorrow to redeem your $5 Panda Plate!</p>
+                <p>Use coupon code "dodgerswin" in the Panda Express app tomorrow to redeem your $6 Panda Plate!</p>
                 <p>To unsubscribe from future emails, <a href="${unsubscribeLink}">click here</a>.</p>
               </body>
             </html>
@@ -149,7 +149,7 @@ export async function fetchAndProcessTodaysMLBData() {
 
       try {
         let team = gameData.dodgers.homeTeamName;
-        // await sendWinnerEmails(personalizedEmails, team);
+        await sendWinnerEmails(personalizedEmails, team);
       } catch (error) {
         console.error("Failed to send email:", error);
       }
